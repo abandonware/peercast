@@ -74,102 +74,12 @@
 <DIV align=center></DIV>
 <TABLE align=center border=0>
   <TBODY>
-  {@if page.channel.isBroadcast}
-  <form action="/admin" method="GET">
-  <input type="hidden" name="cmd" value="setmeta" />
     <TR align=middle bgColor=#cccccc class="normal"> 
       <TD colSpan=2><B>Channel Information</B></TD>
     </TR>
     <TR align=left bgColor=#eeeeee class="normal"> 
       <TD>Name</TD>
-      <TD><input type="hidden" name="name" value="{$page.channel.name}" />
-<a href="peercast://pls/{$page.channel.id}">{$page.channel.name}</TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Genre</TD>
-      <TD><input size="50" type="text" name="genre" value="{$page.channel.genre}" /></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Desc.</TD>
-      <TD><input size="50" type="text" name="desc" value="{$page.channel.desc}" /></TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>URL</TD>
-      <TD><a href="/admin?cmd=redirect&amp;url={$page.channel.contactURL}" target="_blank">{$page.channel.contactURL}</a><br>
-    <input size="50" type="text" name="url" value="{$page.channel.contactURL}" /></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Comment</TD>
-      <TD><input size="50" type="text" name="comment" value="{$page.channel.comment}" /></TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>ID</TD>
-      <TD><a href="http://{$servMgr.serverLocalIP}:{$servMgr.serverPort1}/pls/{$page.channel.id}.pls">{$page.channel.id}</a></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Type</TD>
-      <TD>{$page.channel.type}</TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Bitrate</TD>
-                <TD>{$page.channel.bitrate} kb/s ({$page.channel.srcrate} kb/s)</TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Source</TD>
-      <TD>{$page.channel.sourceType}- {$page.channel.sourceProtocol}<BR>
-        {$page.channel.sourceURL}</TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Uptime</TD>
-      <TD>{$page.channel.uptime}</TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Status</TD>
-      <TD>{$page.channel.status}</TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Position</TD>
-      <TD>{$page.channel.streamPos}</TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Head</TD>
-      <TD>{$page.channel.headPos} ({$page.channel.headLen} bytes)</TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD colSpan=2 align=middle><B>Current Track</B></TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Artist</TD>
-      <TD><input size="50" type="text" name="t_artist" value="{$page.channel.track.artist}" /></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Title</TD>
-      <TD><input size="50" type="text" name="t_title" value="{$page.channel.track.title}" /></TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Album</TD>
-      <TD><input size="50" type="text" name="t_album" value="{$page.channel.track.album}" /></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Genre</TD>
-      <TD><input size="50" type="text" name="t_genre" value="{$page.channel.track.genre}" /></TD>
-    </TR>
-    <TR align=left bgColor=#dddddd class="normal"> 
-      <TD>Contact</TD>
-      <TD><a href="/admin?cmd=redirect&amp;url={$page.channel.track.contactURL}" target="_blank">{$page.channel.track.contactURL}</a><br />
-       <input size="50" type="text" name="t_contact" value="{$page.channel.track.contactURL}" /></TD>
-    </TR>
-        <tr>
-      <td colspan=2 align="center"><input type="submit" name="_no_key_meta_" value="update"/></td>
-    </tr>
-</form>
-{@else}
-    <TR align=middle bgColor=#cccccc class="normal"> 
-      <TD colSpan=2><B>Channel Information</B></TD>
-    </TR>
-    <TR align=left bgColor=#eeeeee class="normal"> 
-      <TD>Name</TD>
-      <TD><a href="peercast://pls/{$page.channel.id}">{$page.channel.name}</TD>
+      <TD>{$page.channel.name}</TD>
     </TR>
     <TR align=left bgColor=#dddddd class="normal"> 
       <TD>Genre</TD>
@@ -181,7 +91,8 @@
     </TR>
     <TR align=left bgColor=#dddddd class="normal"> 
       <TD>URL</TD>
-      <TD><a href="/admin?cmd=redirect&amp;url={$page.channel.contactURL}" target="_blank">{$page.channel.contactURL}</a></TD>
+      <TD><A href="http://localhost:8144/admin?cmd=redirect&amp;url=" 
+      target=_blank></A>{$page.channel.contactURL}</TD>
     </TR>
     <TR align=left bgColor=#eeeeee class="normal"> 
       <TD>Comment</TD>
@@ -189,7 +100,7 @@
     </TR>
     <TR align=left bgColor=#dddddd class="normal"> 
       <TD>ID</TD>
-      <TD><a href="http://{$servMgr.serverLocalIP}:{$servMgr.serverPort1}/pls/{$page.channel.id}.pls">{$page.channel.id}</a></TD>
+      <TD>{$page.channel.id}</TD>
     </TR>
     <TR align=left bgColor=#eeeeee class="normal"> 
       <TD>Type</TD>
@@ -241,9 +152,8 @@
     </TR>
     <TR align=left bgColor=#dddddd class="normal"> 
       <TD>Contact</TD>
-      <TD><a href="/admin?cmd=redirect&amp;url={$page.channel.track.contactURL}" target="_blank">{$page.channel.track.contactURL}</a></TD>
+      <TD>{$page.channel.track.contactURL}</TD>
     </TR>
-{@end}
   </TBODY>
 </TABLE>
 <BR><BR>
@@ -269,15 +179,15 @@
               <TD>{$loop.hit.numRelays}</TD>
               <TD>{$loop.hit.uptime}</TD>
               <TD>{$loop.hit.isFirewalled}</TD>
-              <TD>{$loop.hit.agent}</TD>
+              <TD>{$loop.hit.version}</TD>
               <TD>{$loop.hit.update}</TD>
             </TR>
             {@end} </TBODY> 
           </TABLE>
 <!-- InstanceEndEditable --> 
           <hr size="1">
-          <div align="center" class="normal-small"> &copy; 2005 <a href="http://www.peercast.org" target="_blank">peercast.org</a> 
-          </div>
+          <div align="center" class="normal-small"> &copy; 2005<a href="http://www.peercast.org" target="_blank"> 
+            peercast.org</a> </div>
         </div></td>
     </tr>
   </table>

@@ -1,0 +1,5 @@
+debian/custom/firefox/firefox-handler.js etc/peercast
+debian/custom/gnome/peercast.schemas usr/share/gconf/schemas
+debian/custom/kde/peercast.protocol usr/share/services
+debian/custom/scripts/peercast-parser.pl debian/custom/scripts/peercast_handler.sh usr/share/peercast/scripts
+debian/custom/scripts/peercast-handlers.8 usr/share/man/man8

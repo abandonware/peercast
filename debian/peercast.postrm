@@ -1,0 +1,23 @@
+#! /bin/sh
+# postrm script for peercast-servent
+#
+# see: dh_installdeb(1)
+
+set -e
+
+if [ -f /usr/share/debconf/confmodule ]; then
+. /usr/share/debconf/confmodule
+fi
+
+case "$1" in
+    purge)
+        rm -rf /etc/peercast
+    ;;
+    *)
+    ;;
+esac
+
+
+#DEBHELPER#
+
+exit 0

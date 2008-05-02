@@ -42,12 +42,9 @@
 #define IDC_EDIT_GENRE                  1014
 #define IDC_KEEP                        1015
 #define IDC_EDIT_STATUS                 1016
-#define IDC_GROUPBOX_RELAY              1016
 #define IDC_EDIT_LISTENERS              1017
-#define IDC_STATIC_CONNECTION           1017
 #define IDC_LIST4                       1018
 #define IDC_EDIT_HOSTS                  1018
-#define IDC_STATIC_LOG                  1018
 #define IDC_BUTTON4                     1019
 #define IDC_BUTTON5                     1020
 #define IDC_BUTTON6                     1021
@@ -66,7 +63,6 @@
 #define IDC_BUTTON3                     1059
 #define IDC_EDIT9                       1060
 #define IDC_CHECK11                     1061
-#define IDC_BUTTON9                     1062
 #define IDM_SETTINGS_GUI                32771
 #define ID_POPUP_ABOUT                  32779
 #define ID_POPUP_EXIT_CONFIRM           32781
@@ -92,10 +88,6 @@
 #define ID_POPUP_POPUPMESSAGES_UPGRADEALERTS 32817
 #define ID_POPUP_YELLOWPAGES            32818
 #define ID_POPUP_ADVANCED_SHOWGUI       32819
-#define ID_POPUP_YELLOWPAGES1           32820
-#define ID_POPUP_YELLOWPAGES2           32821
-#define ID_POPUP_SAVE_GUI_POS           32823
-#define ID_POPUP_KEEP_DOWNSTREAMS       32825
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -103,8 +95,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32826
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_COMMAND_VALUE         32820
+#define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

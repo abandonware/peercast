@@ -45,9 +45,6 @@ public:
 
 	virtual const char * APICALL getIniFilename();
 	virtual const char *APICALL getClientTypeOS();
-	virtual void	APICALL openLogFile(); //JP-EX
-	virtual void	APICALL getDirectory(); //JP-EX
-	virtual bool	APICALL clearTemp(); //JP-EX
 	virtual void APICALL printLog(LogBuffer::TYPE t, const char *str);
 
 	virtual void	APICALL updateSettings();

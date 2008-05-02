@@ -22,7 +22,7 @@
 #define _WSOCKET_H
 
 #include <windows.h>
-#include "..\common\socket.h"
+#include "socket.h"
 
 
 // --------------------------------------------------
@@ -34,14 +34,9 @@ public:
     WSAClientSocket()
 	:sockNum(0)
 	,writeCnt(0)
-	,rbPos(0)
-	,rbDataSize(0)
     {
     }
 
-	~WSAClientSocket(){
-		bufList.clear();
-	}
 
 	virtual void	open(Host &);
 	virtual int		read(void *, int);
@@ -58,27 +53,21 @@ public:
 	void	setReuse(bool);
 	void	setNagle(bool);
 	void	setLinger(int);
-	void	setBufSize(int size);
 
 	static	HOSTENT		*resolveHost(const char *);
 
 	void	checkTimeout(bool,bool);
 	void	checkTimeout2(bool,bool);
 
-	virtual void	bufferingWrite(const void*, int);
-	void	checkBuffering(bool, bool);
-
 	unsigned int writeCnt;
-	SOCKET sockNum;
+	unsigned int sockNum;
 	struct sockaddr_in remoteAddr;
 
-	enum {RBSIZE = 8192};
-	char apReadBuf[RBSIZE];
-	int rbPos;
-	int rbDataSize;
 
-	WLock sockLock;
 };
+
+
+
 
 #endif
  

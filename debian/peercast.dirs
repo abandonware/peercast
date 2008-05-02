@@ -1,0 +1,7 @@
+usr/sbin
+usr/share/peercast
+usr/share/man/man8
+etc/peercast
+etc/init.d
+var/log/peercast
+var/run/peercast

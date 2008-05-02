@@ -23,11 +23,6 @@
 #include "http.h"
 #include "sys.h"
 #include "common.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 //-----------------------------------------
 bool HTTP::checkResponse(int r)

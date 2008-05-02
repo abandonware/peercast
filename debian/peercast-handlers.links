@@ -1,0 +1,6 @@
+etc/peercast/firefox-handler.js etc/mozilla-firefox/pref/peercast.js
+etc/peercast/firefox-handler.js usr/lib/mozilla/defaults/pref/peercast.js
+usr/share/man/man8/peercast-handlers.8.gz usr/share/man/man8/peercast_handler.sh.8.gz
+usr/share/man/man8/peercast-handlers.8.gz usr/share/man/man8/peercast-parser.pl.8.gz
+usr/share/peercast/scripts/peercast-parser.pl usr/bin/peercast-parser.pl
+usr/share/peercast/scripts/peercast_handler.sh usr/bin/peercast_handler.sh

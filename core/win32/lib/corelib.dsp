@@ -1,30 +1,30 @@
 # Microsoft Developer Studio Project File - Name="corelib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** 編集しないでください **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=corelib - Win32 Private Debug
-!MESSAGE これは有効なﾒｲｸﾌｧｲﾙではありません。 このﾌﾟﾛｼﾞｪｸﾄをﾋﾞﾙﾄﾞするためには NMAKE を使用してください。
-!MESSAGE [ﾒｲｸﾌｧｲﾙのｴｸｽﾎﾟｰﾄ] ｺﾏﾝﾄﾞを使用して実行してください
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "corelib.mak".
 !MESSAGE 
-!MESSAGE NMAKE の実行時に構成を指定できます
-!MESSAGE ｺﾏﾝﾄﾞ ﾗｲﾝ上でﾏｸﾛの設定を定義します。例:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "corelib.mak" CFG="corelib - Win32 Private Debug"
 !MESSAGE 
-!MESSAGE 選択可能なﾋﾞﾙﾄﾞ ﾓｰﾄﾞ:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "corelib - Win32 Release" ("Win32 (x86) Static Library" 用)
-!MESSAGE "corelib - Win32 Debug" ("Win32 (x86) Static Library" 用)
-!MESSAGE "corelib - Win32 Private Release" ("Win32 (x86) Static Library" 用)
-!MESSAGE "corelib - Win32 Private Debug" ("Win32 (x86) Static Library" 用)
+!MESSAGE "corelib - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "corelib - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "corelib - Win32 Private Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "corelib - Win32 Private Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 1
+# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -67,7 +67,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../" /I "../../common" /I "../../../ui/win32/simple" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "../../" /I "../../common" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -222,10 +222,6 @@ SOURCE=..\..\common\icy.cpp
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\common\identify_encoding.c
 # End Source File
 # Begin Source File
 
@@ -566,10 +562,6 @@ SOURCE=..\..\common\url.cpp
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\common\utf8.c
 # End Source File
 # Begin Source File
 

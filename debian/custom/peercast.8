@@ -1,0 +1,81 @@
+.\"  -*- nroff -*-
+.\"
+.\" Author: Romain Beauxis <toots@rastageeks.org>
+.TH PEERCAST 8 "February 16, 2005" "" ""
+.ad
+.fi
+.SH NAME
+\fBpeercast\fP \- P2P Streaming Server
+
+\fBpeercast_khandler.sh\fP \- KDE handler for peercast:// URIs
+
+\fBpeercast-play-in-xmms.pl\fP \- Translate and play a peercast link under xmms
+
+\fBpeercast-enqueue-in-xmms.pl\fP \- Translate and enqueue a peercast link under xmms
+.SH SYNOPSIS
+.na
+.nf
+.fi
+.B peercast 
+[\fIoptions\fR] 
+
+.B peercast_khandler 
+[\fIpeercast://foo\fR]
+
+.B peercast-play-in-xmms.pl 
+[\fIpeercast://foo~server:port\fR]
+
+.B peercast-enqueue-in-xmms.pl 
+[\fIpeercast://foo~server:port\fR]
+
+.SH DESCRIPTION
+.ad
+.fi
+\fBpeercast\fP is a free server for P2P streaming of audio and video.
+When installed, please browse the address \fIhttp://127.0.0.1:7144/\fR to properly configure your server.
+
+.SH OPTIONS
+A summary of options for \fBpeercast\fP is included below.
+
+.TP
+Generic options:
+.TP
+.B   \-h, \-\-help
+Show help about options
+.TP
+.B   \-i, \-\-inifile <inifile>      
+specify ini file
+.TP
+.B   \-l, \-\-logfile <logfile>      
+specify log file
+This file is created only if this option is set.
+.TP
+.B   \-P, \-\-path <path>            
+set path to html files.
+.TP
+.B   \-p, \-\-pidfile <pidfile>      
+specify pid file.
+This file is created only if this option is set.
+.TP
+.B   \-d, \-\-daemon
+Fork in the background
+.TP
+
+
+.SH FILES
+.ad
+.fi
+.IP \fIpeercast.ini\fR
+Contains configuration data for \fBpeercast\fR. 
+.IP \fIpeercast.log\fR
+Contains log data for \fBpeercast\fR. 
+.IP \fIpeercast.pid\fR
+Contains pid number of current running \fBpeercast\fR. 
+
+.SH AUTHORS
+.ad
+.fi
+Peercast was originally written by PeerCast.org <code@peercast.org>.
+
+This manual page was written by Romain Beauxis <toots@rastageeks.org>
+for the Debian GNU/Linux system, and may be used freely by other. 

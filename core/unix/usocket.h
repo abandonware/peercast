@@ -43,13 +43,8 @@ public:
     UClientSocket()
     {
 		sockNum = 0;
-		rbPos = 0;
-		rbDataSize = 0;
     }
 
-	~UClientSocket(){
-		bufList.clear();
-	}
 
 	virtual void	open(Host &);
 	virtual int	read(void *, int);
@@ -68,24 +63,16 @@ public:
 	void	setReuse(bool);
 	void	setNagle(bool);
 	void	setLinger(int);
-	void	setBufSize(int size);
 
 	static	hostent		*resolveHost(char *);
 
 	void	checkTimeout(bool,bool);
 	void	checkTimeout2(bool,bool);
 
-	virtual void	bufferingWrite(const void*, int);
-	void	checkBuffering(bool, bool);
 
 	unsigned int sockNum;
 	struct sockaddr_in remoteAddr;
 
-	enum {RBSIZE = 8192};
-	char apReadBuf[RBSIZE];
-	int rbPos;
-	int rbDataSize;
 
-	WLock sockLock;
 };
 #endif

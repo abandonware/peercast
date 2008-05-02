@@ -1,0 +1,163 @@
+peercast (0.1218+svn20080104-1.1) unstable; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * This update addresses the following security issue:
+    - CVE-2008-2040: stack-based buffer overfow in the
+      HTTP::getAuthUserPass function leading to remote DoS
+      or arbitrary code execution if peercast is configured
+      to use http-basic authentication (Closes: #478573).
+
+ -- Nico Golde <nion@debian.org>  Fri, 02 May 2008 12:44:34 +0200
+
+peercast (0.1218+svn20080104-1) unstable; urgency=low
+
+  * New upstream release
+  * Removed custom configure support, switched back to upstream
+    build system
+  * Removed XMMS from the list of proposed audio players, added audacious
+    instead.
+  Closes: #468402
+  * Fixed zenity call
+  Closes: #471306
+  * Fixed Xdialog call
+  Closes: #473757
+  * Added --oknodo to stop target in init script
+  Closes: #456734, #461596
+
+ -- Romain Beauxis <toots@rastageeks.org>  Tue, 01 Apr 2008 12:42:09 +0100
+
+peercast (0.1218+svn20071220+2-1) unstable; urgency=low
+
+  * Regenerated tarball, previous one was broken.. 
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 20 Dec 2007 17:17:49 +0100
+
+peercast (0.1218+svn20071220-1) unstable; urgency=low
+
+  * New upstream release.
+  * Backported custom autoconf support, 
+    added README.Debian-source, as well as 
+    corresponding patch
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 20 Dec 2007 15:50:12 +0100
+
+peercast (0.1217.toots.20060314-8) unstable; urgency=low
+
+  * Really add back kdelibs as build-dep.. 
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 20 Dec 2007 15:01:04 +0100
+
+peercast (0.1217.toots.20060314-7) unstable; urgency=low
+
+  * Added back build-dep on kdelibs. 
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 20 Dec 2007 14:27:52 +0100
+
+peercast (0.1217.toots.20060314-6) unstable; urgency=low
+
+  * Changed package names, and updated dependencies.
+    Now main package is peercast, recommending peercast-handlers
+    (Closes: #456964)
+  * Moved patch handling to quilt
+  * Fixed man pages typos
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 20 Dec 2007 03:00:52 +0100
+
+peercast (0.1217.toots.20060314-5) unstable; urgency=low
+
+  * added postrm script to purge remaining configuration files
+    for peercast-servent (Closes: #455118)
+  * Updated standards to 3.7.3 (no changes)
+  * Removed library, was meant for gnome-peercast, 
+    seems like they will never link to it, and leads to dangerous undefined
+    symbols...
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sun, 16 Dec 2007 03:44:32 +0100
+
+peercast (0.1217.toots.20060314-4) unstable; urgency=low
+
+  * Updated build-dep (Closes: #438403)
+
+ -- Romain Beauxis <toots@rastageeks.org>  Fri, 17 Aug 2007 15:50:27 +0200
+
+peercast (0.1217.toots.20060314-3) unstable; urgency=low
+
+  * Corrected ${Source-Version}
+  * Corrected description.
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sat, 28 Jul 2007 22:43:18 +0200
+
+peercast (0.1217.toots.20060314-2) unstable; urgency=low
+
+  * Fixed init script: needed lsb headers
+  * Fixed maintainer scripts: needed to fail when init failed.
+  * Updated standards version
+
+ -- Romain Beauxis <toots@rastageeks.org>  Mon, 23 Apr 2007 13:53:30 +0200
+
+peercast (0.1217.toots.20060314-1) unstable; urgency=high
+
+  * New upstream release
+  * Last upstream was not up to date, this one
+  really fixes the security issue.
+
+ -- Romain Beauxis <toots@rastageeks.org>  Tue, 14 Mar 2006 02:55:08 +0200
+
+peercast (0.1217-1) unstable; urgency=high
+
+  * New upstream release, fixes security issue
+  * Corrected gconf schemas installation
+  * Improved handlers package
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sat, 11 Mar 2006 18:59:18 +0200
+
+peercast (0.1216-1) unstable; urgency=high
+
+  * New upstream Release, fixes a security issue
+  * Added handler for the new gnome interface: geekast
+  * Changed schemas and schemas install
+  * Backported patch from BTS (Closes: #345203)
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sat,  4 Mar 2006 13:57:48 +0200
+
+peercast (0.1214.toots.svn20051112-1) unstable; urgency=low
+
+  * New upstream release
+  * Handler improved
+  * Dependencies improved for peercast-handlers
+
+ -- Romain Beauxis <toots@rastageeks.org>  Thu, 17 Nov 2005 04:19:08 +0200
+
+peercast (0.1214.toots.svn20051028-1) unstable; urgency=low
+
+  * New upstream release
+  * Better handling scripts and dependencies
+  * Added conflicts with gnome-peercast - see bug #335960
+
+ -- Romain Beauxis <toots@rastageeks.org>  Fri, 28 Oct 2005 19:36:35 +0200
+
+peercast (0.1214-4) unstable; urgency=low
+
+  * Fix FTBFS for x86_64 
+  * First upload to sid (Closes: #295728)
+
+ -- Romain Beauxis <toots@rastageeks.org>  Tue, 27 Sep 2005 22:11:32 +0200
+
+peercast (0.1214-3) unstable; urgency=low
+
+  * Splited peercast binary package in servent and handlers 
+
+ -- Romain Beauxis <toots@rastageeks.org>  Tue, 27 Sep 2005 12:49:48 +0200
+
+peercast (0.1214-2) unstable; urgency=low
+
+  * Added gnome and firefox support for peercast:// links 
+
+ -- Romain Beauxis <toots@rastageeks.org>  Sat, 24 Sep 2005 16:43:42 +0200
+
+peercast (0.1214-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Romain Beauxis <toots@rastageeks.org>  Mon, 20 Jun 2005 12:14:02 +0200
+

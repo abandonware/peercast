@@ -1,0 +1,38 @@
+Source: peercast
+Section: sound
+Priority: optional
+Maintainer: Romain Beauxis <toots@rastageeks.org>
+Build-Depends: @cdbs@, gconf2
+Standards-Version: 3.7.3
+
+Package: peercast-servent
+Architecture: all
+Depends: peercast (>= 0.1217.toots.20060314-6), 
+Description: P2P audio and video streaming servent (dummy package)
+ PeerCast is a P2P streaming server. It can stream music
+ and video from a broad variety of formats.
+ .
+ This package is a dummy transitional package, you can remove
+ it safetly
+
+Package: peercast
+Architecture: any
+Depends: ${shlibs:Depends}, logrotate, adduser
+Recommends: peercast-handlers
+Conflicts: gnome-peercast, peercast-servent (<< 0.1217.toots.20060314-5)
+Replaces: peercast-servent
+Description: P2P audio and video streaming servent
+ PeerCast is a P2P streaming server. It can stream music
+ and video from a broad variety of formats.
+
+Package: peercast-handlers
+Architecture: all
+Depends: ${misc:Depends}, xdialog | zenity | kdebase-bin, dialog
+Suggests: konqueror, epiphany-browser, iceweasel, audacious, xmms, vlc, totem
+Description: P2P audio and video streaming handlers
+ PeerCast is a P2P streaming server. It can stream music
+ and video from a broad variety of formats.
+ .
+ This package installs handlers for common browsers like
+ Firefox, Konqueror, Epiphany.
+ 

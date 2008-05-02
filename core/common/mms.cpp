@@ -19,11 +19,6 @@
 #include "channel.h"
 #include "mms.h"
 #include "asf.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // ------------------------------------------
 ASFInfo parseASFHeader(Stream &in);

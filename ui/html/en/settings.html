@@ -74,8 +74,8 @@
             <FORM action=/admin method=get>
               <INPUT type=hidden value=apply name=cmd>
               <TR align=middle> 
-                <TD vAlign=top><div> 
-                    <table width="100%" align=center border="0">
+                <TD colspan="2" vAlign=top><div align="center"> 
+                    <table width="50%" border="0">
                       <tr bgcolor="#cccccc"> 
                         <td colspan="2" class="normal"><div align="center"><strong>Basic 
                             Settings</strong></div></td>
@@ -106,49 +106,6 @@
                             <option value="de">Deutsch</option>
                             <option value="ja">Japanese</option>
                           </select></TD>
-                      </TR>
-                    </table>
-                  </div></TD>
-                  <TD><div>
-                    <table width="100%" align=center border="0">
-                      <tr bgcolor="#cccccc"> 
-                        <td colspan="2" class="normal"><div align="center"><strong>Extend 
-                            Settings</strong></div></td>
-                      </tr>
-                      <TR align=left bgColor=#dddddd class="normal"> 
-                        <TD>autoRelayKeep</TD>
-                        <TD><select name=autoRelayKeep>
-                           <option value=0 {@if servMgr.autoRelayKeep.0}SELECTED{@end}>diable</option>
-                           <option value=1 {@if servMgr.autoRelayKeep.1}SELECTED{@end}>enable</option>
-                           <option value=2 {@if servMgr.autoRelayKeep.2}SELECTED{@end}>No keep when relay = 0</option>
-                           </select>
-                           </TD>
-                      </TR>
-                      <TR align=left bgColor=#eeeeee class="normal"> 
-                        <TD>autoMaxRelaySetting</TD>
-                        <TD bgcolor="#eeeeee"><INPUT name=autoMaxRelaySetting size="10" maxlength="32" value={$servMgr.autoMaxRelaySetting}> 
-                        </TD>
-                      </TR>
-                      <TR align=left bgColor=#dddddd class="normal"> 
-                        <TD bgcolor="#dddddd">autoBumpSkipCount</TD>
-                        <TD><INPUT size=5 value={$servMgr.autoBumpSkipCount} name=autoBumpSkipCount> 
-                        </TD>
-                      </TR>
-                      <TR align=left bgColor=#eeeeee class="normal"> 
-                        <TD>kickPushStartRelays </TD>
-                        <TD><INPUT size=5 value={$servMgr.kickPushStartRelays} name=kickPushStartRelays></TD>
-                      </TR>
-                      <TR align=left bgColor=#dddddd class="normal"> 
-                        <TD>kickPushInterval  </TD>
-                        <TD><INPUT size=5 value={$servMgr.kickPushInterval} name=kickPushInterval></TD>
-                      </TR>
-                      <TR align=left bgColor=#eeeeee class="normal"> 
-                        <TD>allowConnectPCST </TD>
-                        <TD><INPUT type=checkbox value=1 name=allowConnectPCST {@if servMgr.allowConnectPCST}CHECKED{@end} ></TD>
-                      </TR>
-                      <TR align=left bgColor=#dddddd class="normal">
-                         <TD>enableGetName </TD>
-                        <TD><INPUT type=checkbox value=1 name=enableGetName {@if servMgr.enableGetName}CHECKED{@end}></TD>
                       </TR>
                     </table>
                   </div></TD>
@@ -194,23 +151,23 @@
                       </TR>
                       <TR align=left bgColor=#dddddd class="normal"> 
                         <TD bgcolor="#eeeeee">YP Address</TD>
-                        <TD bgcolor="#eeeeee"><input {@if servMgr.ypAddress}value={$servMgr.ypAddress}{@end} name=yp> 
-                        </TD>
+                        <TD bgcolor="#eeeeee"><input {@if servMgr.ypAddress}value={$servMgr.ypAddress}{@end} name=yp>                        </TD>
                       </TR>
                       <TR align=left bgColor=#dddddd class="normal"> 
                         <TD>Max. Output (Kbits/s)</TD>
-                        <TD><INPUT size=5 value={$servMgr.maxBitrateOut} name=maxup> 
-                        </TD>
+                        <TD><INPUT size=5 value={$servMgr.maxBitrateOut} name=maxup>                        </TD>
                       </TR>
                       <TR align=left bgColor=#eeeeee class="normal"> 
                         <TD width="50%">Max. Relays Per Channel</TD>
-                        <TD><INPUT size=5 value={$chanMgr.maxRelaysPerChannel} name=maxrelaypc></INPUT> 
-                        </TD>
+                        <TD bgcolor="#eeeeee"><INPUT size=5 value={$chanMgr.maxRelaysPerChannel} name=maxrelaypc></INPUT>                        </TD>
                       </TR>
                       <TR align=left bgColor=#dddddd class="normal"> 
                         <TD width="50%">Max. Controls In</TD>
-                        <TD><INPUT size=5 value={$servMgr.maxControlsIn} name=maxcin></INPUT> 
-                        </TD>
+                        <TD><INPUT size=5 value={$servMgr.maxControlsIn} name=maxcin></INPUT>                        </TD>
+                      </TR>
+                      <TR align=left bgColor=#dddddd class="normal">
+                        <TD bgcolor="#eeeeee">Max. Connections In </TD>
+                        <TD bgcolor="#eeeeee"><INPUT name=maxsin id="maxsin" value={$servMgr.maxServIn} size=5></TD>
                       </TR>
                     </TBODY>
                   </TABLE></TD>
@@ -355,11 +312,11 @@
                         <TD width="50%">Send</TD>
                         <TD><INPUT type=checkbox value=1 name=brroot></TD>
                       </TR>
-                      <TR align=left bgColor=#eeeeee>
+                      <TR align=left bgColor=#eeeeee> 
                         <TD>Min. PGNU In</TD>
-                        <TD><INPUT size=5 value={$servMgr.minPGNUIn} name=minpgnu></TD>
+                        <TD bgcolor="#eeeeee"><INPUT size=5 value={$servMgr.minPGNUIn} name=minpgnu></TD>
                       </TR>
-                      <TR align=left bgColor=#dddddd>
+                      <TR align=left bgColor=#dddddd> 
                         <TD>Max. PGNU In</TD>
                         <TD><INPUT size=5 value={$servMgr.maxPGNUIn} name=maxpgnu></TD>
                       </TR>
@@ -382,8 +339,8 @@
           </TABLE>
           <!-- InstanceEndEditable --> 
           <hr size="1">
-          <div align="center" class="normal-small"> &copy; 2005 <a href="http://www.peercast.org" target="_blank">peercast.org</a> 
-          </div>
+          <div align="center" class="normal-small"> &copy; 2005<a href="http://www.peercast.org" target="_blank"> 
+            peercast.org</a> </div>
         </div></td>
     </tr>
   </table>

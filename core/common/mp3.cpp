@@ -18,11 +18,6 @@
 
 #include "channel.h"
 #include "mp3.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 
 // ------------------------------------------

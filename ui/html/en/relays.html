@@ -99,7 +99,7 @@
                 - <b><a href="/admin?cmd=stop&id={$loop.channel.id}">Stop</a></b> 
                 </span></font> </TD>
               <TD class="normal"><div align="center">{$loop.channel.bitrate}</div></TD>
-              <TD class="normal"><div align="center"><a href="{$loop.channel.proto}{$servMgr.serverLocalIP}:{$servMgr.serverPort1}/stream/{$loop.channel.id}{$loop.channel.ext}">{$loop.channel.type}</a></div></TD>
+              <TD class="normal"><div align="center"><a href="/stream/{$loop.channel.id}{$loop.channel.ext}">{$loop.channel.type}</a></div></TD>
               <TD class="normal"><div align="center">{$loop.channel.totalListeners} 
                   / {$loop.channel.totalRelays}</div></TD>
               <TD class="normal"><div align="center">{$loop.channel.localListeners} 
@@ -111,8 +111,8 @@
           </TABLE>
 <!-- InstanceEndEditable --> 
           <hr size="1">
-          <div align="center" class="normal-small"> &copy; 2005 <a href="http://www.peercast.org" target="_blank">peercast.org</a> 
-          </div>
+          <div align="center" class="normal-small"> &copy; 2005<a href="http://www.peercast.org" target="_blank"> 
+            peercast.org</a> </div>
         </div></td>
     </tr>
   </table>

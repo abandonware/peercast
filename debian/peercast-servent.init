@@ -1,0 +1,32 @@
+#! /bin/sh
+# This script is a transitional dummy init script for the new
+# peercast package. You can remove it safetly
+#
+# If you made modifications to it, please move them to
+# /etc/init.d/peercast
+#
+### BEGIN INIT INFO
+# Provides:          peercast-dummy
+# Required-Start:    
+# Required-Stop:     
+# Should-Start:      
+# Should-Stop:       
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: 
+# Description:      Dummy init script for easy upgrade with new peercast package.
+#                   You can remove this script safetly
+### END INIT INFO
+
+
+case "$1" in
+  start|stop|restart|force-reload|reload)
+  	exit 0
+        ;;
+  *)
+        exit 0
+        ;;
+esac
+
+
+exit 0 

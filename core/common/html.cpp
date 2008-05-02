@@ -29,31 +29,17 @@
 #include "channel.h"
 #include "stats.h"
 #include "version2.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 
 // --------------------------------------
 HTML::HTML(const char *t, Stream &o)
 {
-	o.writeCRLF = false;
-	out = new WriteBufferStream(8192, &o);
+	out = &o;
 	out->writeCRLF = false;
 
 	title.set(t);
 	tagLevel = 0;
 	refresh = 0;
-}
-
-HTML::~HTML()
-{
-	try {
-		out->flush();
-	} catch (StreamException &) {}
-	delete out;
 }
 
 // --------------------------------------
@@ -181,12 +167,10 @@ void HTML::writeVariable(Stream &s,const String &varName, int loop)
 int HTML::getIntVariable(const String &varName,int loop)
 {
 	String val;
-	LOG_DEBUG("AAA %d %d %d %d", val[0], val[1], val[2], val[3]);
 	MemoryStream mem(val.cstr(),String::MAX_LEN);
 
 	writeVariable(mem,varName,loop);
 
-	LOG_DEBUG("AAA %d %d %d %d", val[0], val[1], val[2], val[3]);
 	return atoi(val.cstr());
 }
 // --------------------------------------
@@ -197,9 +181,6 @@ bool HTML::getBoolVariable(const String &varName,int loop)
 
 	writeVariable(mem,varName,loop);
 
-	String tmp;
-	tmp = varName;
-	LOG_DEBUG("*** %s : %c", tmp.cstr(), val[0]);
 	// integer
 	if ((val[0] >= '0') && (val[0] <= '9'))
 		return atoi(val.cstr()) != 0;	
@@ -225,11 +206,9 @@ void	HTML::readIf(Stream &in,Stream *outp,int loop)
 		{
 			if (getBoolVariable(var,loop)==varCond)
 			{
-				LOG_DEBUG("==varCond, loop = %d", loop);
 				if (readTemplate(in,outp,loop))
 					readTemplate(in,NULL,loop);
 			}else{
-				LOG_DEBUG("!=varCond, loop = %d", loop);
 				if (readTemplate(in,NULL,loop))
 					readTemplate(in,outp,loop);
 			}
@@ -256,8 +235,6 @@ void	HTML::readLoop(Stream &in,Stream *outp,int loop)
 		if (c == '}')
 		{
 			int cnt = getIntVariable(var,loop);
-
-			LOG_DEBUG("loop_cnt : %s = %d", var.cstr(), cnt);
 
 			if (cnt)
 			{
@@ -360,11 +337,6 @@ bool HTML::readTemplate(Stream &in,Stream *outp,int loop)
 				else if (t == TMPL_ELSE)
 					return true;
 			}
-			else if (c == '{')
-			{
-				if (outp)
-					outp->writeChar(c);
-			}
 			else
 				throw StreamException("Unknown template escape");
 		}else
@@ -380,14 +352,12 @@ bool HTML::readTemplate(Stream &in,Stream *outp,int loop)
 void HTML::writeTemplate(const char *fileName, const char *args)
 {
 	FileStream file;
-	MemoryStream mm;
 	try
 	{
 		file.openReadOnly(fileName);
-		mm.readFromFile(file);
 
 		tmplArgs = args;
-		readTemplate(mm,out,0);
+		readTemplate(file,out,0);
 
 	}catch(StreamException &e)
 	{
@@ -396,7 +366,6 @@ void HTML::writeTemplate(const char *fileName, const char *args)
 		out->writeString(fileName);
 	}
 
-	mm.free2();
 	file.close();
 }
 // --------------------------------------

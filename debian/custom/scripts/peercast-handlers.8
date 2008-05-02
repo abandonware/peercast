@@ -1,0 +1,47 @@
+.\"  -*- nroff -*-
+.\"
+.\" Author: Romain Beauxis <toots@rastageeks.org>
+.TH PEERCAST-HANDLERS 8 "February 16, 2005" "" ""
+.ad
+.fi
+.SH NAME
+\fBpeercast_handler.sh\fP \- Handler for peercast:// URIs
+
+\fBpeercast-parser.pl\fP \- Translate and play a peercast link with the given command
+
+.SH SYNOPSIS
+.na
+.nf
+.fi
+.B peercast_handler 
+[\fIpeercast://foo\fR]
+
+.B peercast-parser.pl 
+\-h=[\fIhost:port\fR] \-b="[\fImy_command \-\-play %u\fR]" [\fIpeercast://...\fR]
+
+.SH DESCRIPTION
+.ad
+.fi
+\fBpeercast\fP is a free server for P2P streaming of audio and video.
+Those commands are used to handle and parse peercast:// links.
+
+.SH OPTIONS
+A summary of options for \fBpeercast-parser.pl\fP is included below.
+
+.TP
+Options:
+.TP
+.B   \-h
+Specify server host
+.TP
+.B \-b
+Specify command line, %u for the translated url
+.TP
+
+.SH AUTHORS
+.ad
+.fi
+Peercast was originally written by PeerCast.org <code@peercast.org>.
+
+This manual page was written by Romain Beauxis <toots@rastageeks.org>
+for the Debian GNU/Linux system, and may be used freely by other. 

@@ -1,0 +1,73 @@
+#!/bin/sh -e
+
+if ! ([ "$1" = "configure" ] || [ "$1" = "reconfigure" ]); then
+  exit 0
+fi
+
+
+# set some useful variables
+PEERCAST="peercast"
+CHOWN="/bin/chown"
+ADDUSER="/usr/sbin/adduser"
+USERDEL="/usr/sbin/userdel"
+USERADD="/usr/sbin/useradd"
+GROUPDEL="/usr/sbin/groupdel"
+GROUPMOD="/usr/sbin/groupmod"
+ID="/usr/bin/id"
+
+
+###
+# 1. get current peercast uid and gid if user exists.
+set -e
+if $ID $PEERCAST > /dev/null 2>&1; then
+   IUID=`$ID --user $PEERCAST`
+   IGID=`$ID --group $PEERCAST`
+else
+   IUID="NONE"
+   IGID="NONE"
+fi
+
+
+###
+# 2. Ensure that no standard account or group will remain before adding the
+#    new user
+if [ "$IUID" = "NONE" ] || [ $IUID -ge 1000 ]; then # we must do sth :)
+  if ! [ "$IUID" = "NONE" ] && [ $IUID -ge 1000 ]; then
+      # peercast user exists but isn't a system user... delete it.
+      $USERDEL $PEERCAST
+      $GROUPDEL $PEERCAST
+  fi
+
+###
+# 3. Add the system account.
+#    Issue a debconf warning if it fails. 
+  if $GROUPMOD $PEERCAST > /dev/null 2>&1; then 
+    # peercast group already exists, use --ingroup
+    if ! $ADDUSER --system --disabled-password --disabled-login --home /usr/share/peercast --no-create-home --ingroup $PEERCAST $PEERCAST; then
+      echo "The adduser command failed."
+    fi
+  else
+    if ! $ADDUSER --system --disabled-password --disabled-login --home /usr/share/peercast --no-create-home --group $PEERCAST; then
+      echo "The adduser command failed."
+    fi
+  fi
+fi
+set +e
+
+###
+# 4. Add default config file if not any:
+if ! [ -f /etc/peercast/peercast.ini ]; then
+	cp /usr/share/peercast/peercast.ini.default /etc/peercast/peercast.ini
+fi
+
+###
+# 5. change ownership of directory
+$CHOWN -R $PEERCAST:$PEERCAST /usr/share/peercast/
+$CHOWN -R $PEERCAST:$PEERCAST /var/log/peercast/
+$CHOWN -R $PEERCAST:$PEERCAST /etc/peercast/
+$CHOWN -R $PEERCAST:$PEERCAST /var/run/peercast/
+
+
+
+
+#DEBHELPER#

@@ -9,7 +9,7 @@
 <link href="peercast.css" rel="stylesheet" type="text/css">
 <!-- InstanceBeginEditable name="head" -->
 <meta http-equiv="refresh" content="{$servMgr.refreshHTML}">
-<!-- InstanceEndEditable --> 
+<!-- InstanceEndEditable -->
 </head>
 
 <body bgcolor="#DDDDDD">
@@ -39,8 +39,8 @@
                       <td>
 					  {@if servMgr.upgradeURL} 
 	  				    <div align="center" class="normal">
-                        <a href="{$servMgr.upgradeURL}" target="_blank"><strong><font color="#FF0000">Mise  jour disponible, cliquez ici pour la tlcharger 
-                          </font></strong></a>
+                        <a href="{$servMgr.upgradeURL}" target="_blank"><strong><font color="#FF0000">Pensez à mettre à jour
+				PeerCast! Pour cela, cliquez ici. </font></strong></a>
 						</div>
 					  {@else}
 	  				    <div align="center" class="normal-small">
@@ -57,20 +57,28 @@
           <div align="center"></div>
           <table width="100%" border="1" cellpadding="1" cellspacing="0">
             <tr class="normal"> 
-              <td><div align="center"><a href="index.html">Information</a></div></td>
-              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">Pages Jaunes</a></div></td>
+              <td><div align="center"><a href="index.html">Informations</a></div></td>
+              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">Pages Jaunes </a></div></td>
               <td><div align="center"><a href="relays.html">Relais</a></div></td>
               <td><div align="center"><a href="broadcast.html">Diffuser</a></div></td>
               <td><div align="center"><a href="connections.html">Connections</a></div></td>
-              <td><div align="center"><a href="settings.html">Préférences</a></div></td>
-              <td><div align="center"><a href="viewlog.html">Voir les journaux</a></div></td>
-              <td><div align="center"><a href="logout.html">Quitter</a></div></td>
+              <td><div align="center"><a href="settings.html">Réglages</a></div></td>
+              <td><div align="center"><a href="viewlog.html">Voir le journal</a></div></td>
+              <td><div align="center"><a href="logout.html">Sortir</a></div></td>
             </tr>
           </table>
           <br>
           <!-- InstanceBeginEditable name="content" -->
-<DIV align=center>
-<TABLE align=center border=0>
+          <p> {@if servMgr.disabled} 
+          <div align="center" class="normal"> 
+            <p><strong><font color="#FF0000">Broadcasting has been disabled</font></strong
+></p>
+            <p><strong><font color="#FF0000">Please contact peercast.org</font></strong
+></p>
+          </div>
+          {@end} 
+          <DIV align=center> 
+            <TABLE align=center border=0>
               <TBODY>
                 <TR align=middle> 
                   <TD vAlign=top> <TABLE width="100%" align=center border=0>
@@ -100,7 +108,7 @@
                           <TD><A href="/admin?cmd=viewxml">Voir</A></TD>
                         </TR>
                         <TR align=left bgColor=#dddddd class="normal"> 
-                          <TD>Cache de l'hote GNet </TD>
+                          <TD>Cache de l'hôte GNet </TD>
                           <TD>{$servMgr.numServHosts} - <A 
             href="/admin?cmd=clear&hostcache=1">Effacer</A></TD>
                         </TR>
@@ -109,7 +117,8 @@
                   <TD vAlign=top> <TABLE width="100%" align=center border=0>
                       <TBODY>
                         <TR align=middle> 
-                          <TD colSpan=4 bgcolor="#cccccc" class="normal"><B>Bande passante</B></TD>
+                          <TD colSpan=4 bgcolor="#cccccc" class="normal"><B>Bande 
+                            passante</B></TD>
                         </TR>
                         <TR align=left class="normal"> 
                           <TD bgcolor="#eeeeee"></TD>
@@ -166,7 +175,7 @@
                         <td class="normal">{$servMgr.numPGNU}</td>
                       </tr>
                       <tr bgcolor="#dddddd"> 
-                        <td class="normal">Incoming</td>
+                        <td class="normal">Entrant</td>
                         <td bgcolor="#dddddd" class="normal">{$servMgr.numIncoming}</td>
                       </tr>
                       <tr bgcolor="#eeeeee"> 
@@ -180,8 +189,8 @@
           </DIV>
           <!-- InstanceEndEditable --> 
           <hr size="1">
-          <div align="center" class="normal-small"> &copy; 2002-2004 <a href="http://www.peercast.org" target="_blank">peercast.org</a> 
-          </div>
+          <div align="center" class="normal-small"> &copy; 2005<a href="http://www.peercast.org" target="_blank"> 
+            peercast.org</a> </div>
         </div></td>
     </tr>
   </table>

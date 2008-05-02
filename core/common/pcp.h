@@ -24,7 +24,6 @@
 
 #include "id.h"
 #include "cstream.h"
-#include "channel.h"
 
 // ------------------------------------------------
 
@@ -82,16 +81,10 @@ static const ID4 PCP_HOST_UPTIME	= "uptm";
 static const ID4 PCP_HOST_TRACKER	= "trkr";
 static const ID4 PCP_HOST_CHANID	= "cid";
 static const ID4 PCP_HOST_VERSION	= "ver";
-static const ID4 PCP_HOST_VERSION_VP	= "vevp";
-static const ID4 PCP_HOST_VERSION_EX_PREFIX = "vexp";
-static const ID4 PCP_HOST_VERSION_EX_NUMBER = "vexn";
-static const ID4 PCP_HOST_CLAP_PP		= "clap"; //JP-MOD
 static const ID4 PCP_HOST_FLAGS1	= "flg1";
 static const ID4 PCP_HOST_OLDPOS	= "oldp";
 static const ID4 PCP_HOST_NEWPOS	= "newp";
-static const ID4 PCP_HOST_UPHOST_IP	= "upip";
-static const ID4 PCP_HOST_UPHOST_PORT	= "uppt";
-static const ID4 PCP_HOST_UPHOST_HOPS	= "uphp";
+
 
 static const ID4 PCP_QUIT			= "quit";
 
@@ -115,7 +108,6 @@ static const ID4 PCP_CHAN_INFO_NAME		= "name";
 static const ID4 PCP_CHAN_INFO_URL		= "url";
 static const ID4 PCP_CHAN_INFO_DESC		= "desc";
 static const ID4 PCP_CHAN_INFO_COMMENT	= "cmnt";
-static const ID4 PCP_CHAN_INFO_PPFLAGS	= "pflg"; //JP-MOD
 
 static const ID4 PCP_CHAN_TRACK			= "trck";
 static const ID4 PCP_CHAN_TRACK_TITLE	= "titl";
@@ -134,10 +126,7 @@ static const ID4 PCP_BCST_FROM			= "from";
 static const ID4 PCP_BCST_DEST			= "dest";	
 static const ID4 PCP_BCST_GROUP			= "grp";	
 static const ID4 PCP_BCST_CHANID		= "cid";	
-static const ID4 PCP_BCST_VERSION		= "vers";
-static const ID4 PCP_BCST_VERSION_VP	= "vrvp";
-static const ID4 PCP_BCST_VERSION_EX_PREFIX = "vexp";
-static const ID4 PCP_BCST_VERSION_EX_NUMBER = "vexn";
+static const ID4 PCP_BCST_VERSION		= "vers";	
 
 static const ID4 PCP_PUSH				= "push";	
 static const ID4 PCP_PUSH_IP			= "ip";	
@@ -192,8 +181,6 @@ public:
 	,forMe(false) 
 	,streamPos(0)
 	,group(0)
-	,servent_id(0)
-	,ttl(0)
 	{
 		chanID.clear();
 		bcID.clear();
@@ -215,8 +202,6 @@ public:
 	bool forMe;
 	unsigned int streamPos;
 	int group;
-	int servent_id;
-	int ttl;
 };
 
 // ----------------------------------------------
@@ -239,7 +224,6 @@ public:
 
 	virtual bool sendPacket(ChanPacket &,GnuID &);
 	virtual void flush(Stream &);
-	virtual unsigned int flushUb(Stream &, unsigned int);
 	virtual void readHeader(Stream &,Channel *);
 	virtual int readPacket(Stream &,Channel *);
 	virtual void readEnd(Stream &,Channel *);
@@ -251,8 +235,7 @@ public:
 	int		procAtom(AtomStream &,ID4,int,int,BroadcastState &);
 	int		readAtom(AtomStream &,BroadcastState &);
 	void	readChanAtoms(AtomStream &,int,BroadcastState &);
-//	void	readHostAtoms(AtomStream &, int, BroadcastState &);
-	void	readHostAtoms(AtomStream &, int, BroadcastState &, ChanHit &, bool flg=true);
+	void	readHostAtoms(AtomStream &, int, BroadcastState &);
 	void	readPushAtoms(AtomStream &, int,BroadcastState &);
 
 	void	readPktAtoms(Channel *,AtomStream &,int,BroadcastState &);

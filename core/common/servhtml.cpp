@@ -43,11 +43,8 @@ void Servent::addHeader(HTML &html, int sel)
 	addBasicHeader(html);
 
 
-	if (version_ex_number){
-		html.startTagEnd("div align=\"center\"",PCX_VERSTRING_EX);
-	} else {
-		html.startTagEnd("div align=\"center\"",PCX_VERSTRING);
-	}
+
+	html.startTagEnd("div align=\"center\"",PCX_VERSTRING);
 
 	if (servMgr->downloadURL[0])
 	{

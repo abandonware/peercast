@@ -25,7 +25,6 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#include "peercast.h"	// qt
 
 #include <sys/time.h>
 #include <pthread.h>
@@ -140,9 +139,6 @@ void USys::callLocalURL(const char *str,int port)
 // ---------------------------------
 void USys::executeFile( const char *file )
 {
-	char sztemp[256];
-	sprintf(sztemp, "%s%s %s &", peercastApp->getPath(), "play.sh", file);	// qt
-	system(sztemp);
 }
 void USys::exit()
 {

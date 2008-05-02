@@ -1,0 +1,4 @@
+ui/linux/peercast usr/sbin
+debian/config/* usr/share/peercast
+ui/html usr/share/peercast
+debian/custom/peercast.8 usr/share/man/man8

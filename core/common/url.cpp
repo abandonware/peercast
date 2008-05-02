@@ -23,27 +23,18 @@
 #include "servmgr.h"
 #include "peercast.h"
 #include "version2.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // ------------------------------------------------
 void URLSource::stream(Channel *ch)
 {
 	
-	String url,tmpUrl;
+	String url;
 	while (ch->thread.active && !peercastInst->isQuitting)
 	{
-		tmpUrl = url;
 		if (url.isEmpty())
 			url = baseurl;
 
 		url = streamURL(ch,url.cstr());
-		if (url == tmpUrl){
-			sys->sleep(2000);
-		}
 	}
 
 }

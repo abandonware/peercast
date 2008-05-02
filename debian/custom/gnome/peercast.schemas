@@ -1,0 +1,40 @@
+<gconfschemafile>
+ <schemalist>
+	<schema>
+	<key>/schemas/desktop/gnome/url-handlers/peercast/needs_terminal</key>
+	<applyto>/desktop/gnome/url-handlers/peercast/needs_terminal</applyto>
+	<owner>gnome</owner>
+	<type>bool</type>
+	<default>false</default>
+        <locale name="C">
+		 <short>Run the command in a terminal</short>
+                <long>True if the command used to handle this type of URL should be run in a terminal.</long>
+	</locale>
+        </schema>
+
+	<schema>
+	<key>/schemas/desktop/gnome/url-handlers/peercast/command</key>
+	<applyto>/desktop/gnome/url-handlers/peercast/command</applyto>
+	<owner>gnome</owner>
+	<type>string</type>
+	<default>peercast_handler.sh %s</default>
+        <locale name="C">
+		 <short>The handler for &quot;peercast&quot; URLs</short>
+                <long>The command used to handle &quot;peercast&quot; URLs, if enabled.</long>
+	</locale>
+        </schema>
+
+	<schema>
+	<key>/schemas/desktop/gnome/url-handlers/peercast/enabled</key>
+	<applyto>/desktop/gnome/url-handlers/peercast/enabled</applyto>
+	<owner>gnome</owner>
+	<type>bool</type>
+	<default>true</default>
+        <locale name="C">
+		 <short>Whether the specified command should handle &quot;peercast&quot; URLs</short>
+                <long>True if the command specified in the &quot;command&quot; key should handle &quot;peercast&quot; URLs.</long>
+	</locale>
+        </schema>
+
+</schemalist>
+</gconfschemafile>

@@ -1,0 +1,25 @@
+Index: peercast-0.1218+svn20080104.orig/core/common/sys.h
+===================================================================
+--- peercast-0.1218+svn20080104.orig.orig/core/common/sys.h	2008-04-01 13:10:14.000000000 +0100
++++ peercast-0.1218+svn20080104.orig/core/common/sys.h	2008-04-01 13:11:46.000000000 +0100
+@@ -325,7 +325,6 @@
+ #define _BIG_ENDIAN 1
+ #endif
+ 
+-typedef long long int64_t;
+ 
+ typedef int (*THREAD_FUNC)(ThreadInfo *);
+ #define THREAD_PROC int 
+Index: peercast-0.1218+svn20080104.orig/core/common/ogg.h
+===================================================================
+--- peercast-0.1218+svn20080104.orig.orig/core/common/ogg.h	2008-04-01 13:10:14.000000000 +0100
++++ peercast-0.1218+svn20080104.orig/core/common/ogg.h	2008-04-01 13:11:46.000000000 +0100
+@@ -19,7 +19,7 @@
+ #ifndef _OGG_H
+ #define _OGG_H
+ 
+-
++#include <sys/types.h>
+ #include "channel.h"
+ // ----------------------------------------------
+ class OggPage;

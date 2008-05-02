@@ -1,0 +1,8 @@
+usr/bin
+usr/share/peercast/scripts 
+usr/share/man/man8
+usr/share/gconf/schemas
+usr/lib/mozilla/defaults/pref
+etc/mozilla-firefox/pref
+etc/peercast
+etc

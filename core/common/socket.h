@@ -24,101 +24,7 @@
 #include "common.h"
 #include "stream.h"
 
-//#define DISABLE_NAGLE 1
-
-class SocketBuffer {
-
-public:
-	SocketBuffer(const void *p, int l){
-		buf = new char[l];
-		len = l;
-		pos = 0;
-		next = NULL;
-		ctime = sys->getTime();
-		memcpy((void*)buf, p, l);
-	}
-
-	~SocketBuffer(){
-		if (buf){
-			delete [] buf;
-		}
-	}
-	char *buf;
-	int len;
-	int pos;
-	unsigned int ctime;
-	SocketBuffer *next;
-};
-
-class SocketBufferList {
-
-public:
-	SocketBufferList(){
-		top = NULL;
-		last = NULL;
-		skipCount = 0;
-		lastSkipTime = 0;
-	}
-
-	bool isNull(){ return (top == NULL); }
-	void add(const void *p, int l){
-		SocketBuffer *tmp = new SocketBuffer(p,l);
-
-		if (!last){
-			top = tmp;
-			last = tmp;
-		} else {
-			last->next = tmp;
-			last = tmp;
-		}
-
-//		LOG_DEBUG("tmp = %d, top = %d, last = %d", tmp, top, last);
-	}
-
-	SocketBuffer *getTop(){
-		unsigned int ctime = sys->getTime();
-
-		while(top){
-			if (top && (top->ctime + 10 >= ctime)){
-				break;
-			} else {
-//				LOG_DEBUG("over 10sec(data skip)");
-				skipCount++;
-				lastSkipTime = sys->getTime();
-				deleteTop();
-			}
-		}
-		return top;
-	}
-
-	void deleteTop(){
-//		LOG_DEBUG("oldtop = %d", top);
-		SocketBuffer *tmp = top;
-		top = tmp->next;
-		delete tmp;
-		if (!top){
-			last = NULL;
-		}
-
-//		LOG_DEBUG("newtop = %d",top);
-	}
-
-	void clear(){
-		while(top){
-			SocketBuffer *tmp = top;
-			top = tmp->next;
-			delete tmp;
-		}
-		top = NULL;
-		last = NULL;
-	}
-
-	SocketBuffer *top;
-	SocketBuffer *last;
-	unsigned int skipCount;
-	unsigned int lastSkipTime;
-
-};
+#define DISABLE_NAGLE 1
 
 // --------------------------------------------------
 class ClientSocket : public Stream
@@ -129,16 +35,6 @@ public:
 	{
 		readTimeout = 30000;
 		writeTimeout = 30000;
-#ifdef NULL//WIN32
-		skipCount = 0;
-		lastSkipTime = 0;
-#endif
-	}
-
-	~ClientSocket(){
-#ifdef NULL//WIN32
-		bufList.clear();
-#endif
 	}
 
     // required interface
@@ -161,7 +57,7 @@ public:
 
 
     static unsigned int    getIP(char *);
-	static bool			getHostname(char *,size_t,unsigned int); //JP-MOD
+	static bool			getHostname(char *,unsigned int);
 
     virtual bool eof()
     {
@@ -170,15 +66,7 @@ public:
 
     Host    host;
 
-#ifdef NULL//WIN32
-	SocketBufferList	bufList;
-	virtual void bufferingWrite(const void *, int) = 0;
-	unsigned int skipCount;
-	unsigned int lastSkipTime;
-#endif
-
 	unsigned int readTimeout,writeTimeout;
-
 };
 
 

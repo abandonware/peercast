@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+# In order to regenerate 'debian/control' :
+#    DEB_AUTO_UPDATE_DEBIAN_CONTROL=yes fakeroot debian/rules clean
+# Then check manually if everything's ok
+
+
+DEB_BUILDDIR := ui/linux
+CPPFLAGS = -DENABLE_BINRELOC -pthread  -D__cplusplus -D_UNIX -D_REENTRANT -g -Wall -O2
+LDFLAGS = -pthread
+
+binary-install/peercast-handlers::
+	dh_gconf -ppeercast-handlers
+	chmod +x $(CURDIR)/debian/peercast-handlers/usr/share/peercast/scripts/peercast-parser.pl
+	chmod +x $(CURDIR)/debian/peercast-handlers/usr/share/peercast/scripts/peercast_handler.sh
+	
+

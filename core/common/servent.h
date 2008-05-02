@@ -46,12 +46,6 @@ public:
 		MAX_OUTPACKETS = 32		// max. output packets per queue (normal/priority)
 	};
 
-	enum
-	{
-		MAX_PROC_PACKETS = 300,
-		MAX_OUTWARD_SIZE = 1024 * 10
-	};
-
     enum TYPE					
     {
 		T_NONE,					// Not allocated
@@ -153,7 +147,6 @@ public:
 	static bool	pingHost(Host &,GnuID &);
 
 	bool	getLocalURL(char *);
-	bool	getLocalTypeURL(char *, ChanInfo::TYPE);
 
 	// various types of handshaking are needed
 	void	handshakePLS(ChanHitList **, int, bool);
@@ -288,12 +281,6 @@ public:
 	PCPStream *pcpStream;
 	Cookie	cookie;
 
-	int servent_id;
-	unsigned int lastSkipTime;
-	unsigned int lastSkipCount;
-	unsigned int waitPort;
-
-	ChanHit serventHit;
 };
 
 extern char *nextCGIarg(char *cp, char *cmd, char *arg);

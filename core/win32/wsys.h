@@ -24,8 +24,8 @@
 #define _WSYS_H
 // ------------------------------------
 #include <windows.h>
-#include "..\common\socket.h"
-#include "..\common\sys.h"
+#include "socket.h"
+#include "sys.h"
 
 // ------------------------------------
 class WSys : public Sys

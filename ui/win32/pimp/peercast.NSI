@@ -7,7 +7,7 @@
 ;
 
 ; The name of the installer
-Name "PeerCast v0.1214"
+Name "PeerCast v0.1218"
 
 
 Function Kill

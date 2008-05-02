@@ -27,12 +27,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include "wsocket.h"
-#include "..\common\stats.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
+#include "stats.h"
 
 
 // --------------------------------------------------
@@ -51,11 +46,8 @@ void WSAClientSocket::init()
 
 }
 // --------------------------------------------------
-bool ClientSocket::getHostname(char *str,size_t size,unsigned int ip) //JP-MOD
+bool ClientSocket::getHostname(char *str,unsigned int ip)
 {
-	if(size == 0)
-		return false;
-
 	HOSTENT *he;
 
 	ip = htonl(ip);
@@ -64,31 +56,15 @@ bool ClientSocket::getHostname(char *str,size_t size,unsigned int ip) //JP-MOD
 
 	if (he)
 	{
-		LOG_DEBUG("getHostname: %d.%d.%d.%d -> %s", ((BYTE*)&ip)[0], ((BYTE*)&ip)[1], ((BYTE*)&ip)[2], ((BYTE*)&ip)[3], he->h_name);
-		strncpy(str,he->h_name,size-1);
-		str[size-1] = '\0';
+		strcpy(str,he->h_name);
 		return true;
 	}else
 		return false;
 }
 
-unsigned int cache_ip = 0;
-unsigned int cache_time = 0;
-
 // --------------------------------------------------
 unsigned int ClientSocket::getIP(char *name)
 {
-	unsigned int ctime = sys->getTime();
-	bool null_flg = (name == NULL);
-
-	if (null_flg){
-		if ((cache_time != 0) && (cache_time + 60 > ctime)){
-			return cache_ip;
-		} else {
-			cache_time = 0;
-			cache_ip = 0;
-		}
-	}
 
 	char szHostName[256];
 
@@ -109,20 +85,13 @@ unsigned int ClientSocket::getIP(char *name)
 	LPSTR lpAddr = he->h_addr_list[0];
 	if (lpAddr)
 	{
-		unsigned int ret;
 		struct in_addr  inAddr;
 		memmove (&inAddr, lpAddr, 4);
 
-		ret =  inAddr.S_un.S_un_b.s_b1<<24 |
+		return inAddr.S_un.S_un_b.s_b1<<24 |
 			   inAddr.S_un.S_un_b.s_b2<<16 |
 			   inAddr.S_un.S_un_b.s_b3<<8 |
 			   inAddr.S_un.S_un_b.s_b4;
-
-		if (null_flg){
-			cache_ip = ret;
-			cache_time = ctime;
-		}
-		return ret;
 	}
 	return 0;
 }
@@ -162,31 +131,6 @@ void WSAClientSocket::setReuse(bool yes)
 }
 
 // --------------------------------------------------
-void WSAClientSocket::setBufSize(int size)
-{
-	int oldop;
-	int op = size;
-	int len = sizeof(op);
-	if (getsockopt(sockNum,SOL_SOCKET,SO_RCVBUF,(char *)&oldop,&len) == -1) {
-		LOG_DEBUG("Unable to get RCVBUF");
-	} else if (oldop < size) {
-		if (setsockopt(sockNum,SOL_SOCKET,SO_RCVBUF,(char *)&op,len) == -1) 
-			LOG_DEBUG("Unable to set RCVBUF");
-		//else
-		//	LOG_DEBUG("*** recvbufsize:%d -> %d", oldop, op);
-	}
-
-	if (getsockopt(sockNum,SOL_SOCKET,SO_SNDBUF,(char *)&oldop,&len) == -1) {
-		LOG_DEBUG("Unable to get SNDBUF");
-	} else if (oldop < size) {
-		if (setsockopt(sockNum,SOL_SOCKET,SO_SNDBUF,(char *)&op,len) == -1) 
-			LOG_DEBUG("Unable to set SNDBUF");
-		//else
-		//	LOG_DEBUG("*** sendbufsize: %d -> %d", oldop, op);
-	}
-}
-
-// --------------------------------------------------
 HOSTENT *WSAClientSocket::resolveHost(const char *hostName)
 {
 	HOSTENT *he;
@@ -218,7 +162,6 @@ void WSAClientSocket::open(Host &rh)
 #ifdef DISABLE_NAGLE
 	setNagle(false);
 #endif
-	setBufSize(65535);
 
 	host = rh;
 
@@ -343,25 +286,9 @@ void WSAClientSocket::connect()
 int WSAClientSocket::read(void *p, int l)
 {
 	int bytesRead=0;
-
 	while (l)
 	{
-		if (rbDataSize >= l) {
-			memcpy(p, &apReadBuf[rbPos], l);
-			rbPos += l;
-			rbDataSize -= l;
-			return l;
-		} else if (rbDataSize > 0) {
-			memcpy(p, &apReadBuf[rbPos], rbDataSize);
-			p = (char *) p + rbDataSize;
-			l -= rbDataSize;
-			bytesRead += rbDataSize;
-		}
-
-		rbPos = 0;
-		rbDataSize = 0;
-		//int r = recv(sockNum, (char *)p, l, 0);
-		int r = recv(sockNum, apReadBuf, RBSIZE, 0);
+		int r = recv(sockNum, (char *)p, l, 0);
 		if (r == SOCKET_ERROR)
 		{
 			// non-blocking sockets always fall through to here
@@ -377,11 +304,9 @@ int WSAClientSocket::read(void *p, int l)
 			if (host.localIP())
 				stats.add(Stats::LOCALBYTESIN,r);
 			updateTotals(r,0);
-			//bytesRead += r;
-			//l -= r;
-			//p = (char *)p+r;
-
-			rbDataSize += r;
+			bytesRead += r;
+			l -= r;
+			p = (char *)p+r;
 		}
 	}
 	return bytesRead;
@@ -396,8 +321,7 @@ int WSAClientSocket::readUpto(void *p, int l)
 		if (r == SOCKET_ERROR)
 		{
 			// non-blocking sockets always fall through to here
-			//checkTimeout(true,false);
-			return r;
+			checkTimeout(true,false);
 
 		}else if (r == 0)
 		{
@@ -412,7 +336,6 @@ int WSAClientSocket::readUpto(void *p, int l)
 			l -= r;
 			p = (char *)p+r;
 		}
-		if (bytesRead) break;
 	}
 	return bytesRead;
 }
@@ -446,136 +369,6 @@ void WSAClientSocket::write(const void *p, int l)
 	}
 }
 
-// --------------------------------------------------
-void WSAClientSocket::bufferingWrite(const void *p, int l)
-{
-	if (bufList.isNull() && p != NULL){
-		while(l){
-			int r = send(sockNum, (char *)p, l, 0);
-			if (r == SOCKET_ERROR){
-				int err = WSAGetLastError();
-				if (err == WSAEWOULDBLOCK){
-					bufList.add(p, l);
-//					LOG_DEBUG("normal add");
-					break;
-				} else {
-					char str[32];
-					sprintf(str,"%d",err);
-					throw SockException(str);
-				}
-			} else if (r == 0) {
-				throw SockException("Closed on write");
-			} else if (r > 0){
-				stats.add(Stats::BYTESOUT,r);
-				if (host.localIP())
-					stats.add(Stats::LOCALBYTESOUT,r);
-
-				updateTotals(0,r);
-				l -= r;
-				p = (char *)p+r;
-			}
-		}
-	} else {
-//		LOG_DEBUG("***************BufferingWrite");
-		if (p)
-			bufList.add(p,l);
-
-		bool flg = true;
-
-		while(flg){
-			SocketBuffer *tmp;
-			tmp = bufList.getTop();
-
-			if (tmp){
-//				LOG_DEBUG("tmp->pos = %d, tmp->len = %d, %d", tmp->pos, tmp->len, tmp);
-				while(tmp->pos < tmp->len){
-					int r = send(sockNum, (char*)(tmp->buf + tmp->pos), tmp->len - tmp->pos, 0);
-//					LOG_DEBUG("send = %d", r);
-					if (r == SOCKET_ERROR){
-						int err = WSAGetLastError();
-						if (err == WSAEWOULDBLOCK){
-							flg = false;
-							break;
-						} else {
-							bufList.clear();
-							char str[32];
-							sprintf(str,"%d",err);
-							throw SockException(str);
-						}
-					} else if (r == 0){
-						bufList.clear();
-						throw SockException("Closed on write");
-					} else if (r > 0){
-						stats.add(Stats::BYTESOUT,r);
-						if (host.localIP())
-							stats.add(Stats::LOCALBYTESOUT,r);
-
-						updateTotals(0,r);
-
-						tmp->pos += r;
-						if (tmp->pos >= tmp->len){
-//							LOG_DEBUG("deleteTop");
-							bufList.deleteTop();
-							break;
-						}
-					}
-				}
-			} else {
-				flg = false;
-			}
-		}
-//		LOG_DEBUG("bufferingWrite end");
-	}
-}
-
-// --------------------------------------------------
-void WSAClientSocket::checkBuffering(bool r, bool w)
-{
-    int err = WSAGetLastError();
-    if (err == WSAEWOULDBLOCK)
-    {
-
-		timeval timeout;
-		fd_set read_fds;
-		fd_set write_fds;
-
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 0;
-
-        FD_ZERO (&write_fds);
-		if (w)
-		{
-			timeout.tv_sec = (int)this->writeTimeout/1000;
-			FD_SET (sockNum, &write_fds);
-		}
-
-        FD_ZERO (&read_fds);
-		if (r)
-		{
-			timeout.tv_sec = (int)this->readTimeout/1000;
-	        FD_SET (sockNum, &read_fds);
-		}
-
-		timeval *tp;
-		if (timeout.tv_sec)
-			tp = &timeout;
-		else
-			tp = NULL;
-
-
-		int r=select (NULL, &read_fds, &write_fds, NULL, tp);
-
-        if (r == 0)
-			throw TimeoutException();
-		else if (r == SOCKET_ERROR)
-			throw SockException("select failed.");
-
-	}else{
-		char str[32];
-		sprintf(str,"%d",err);
-		throw SockException(str);
-	}
-}
 
 // --------------------------------------------------
 void WSAClientSocket::bind(Host &h)
@@ -608,7 +401,7 @@ ClientSocket *WSAClientSocket::accept()
 	int fromSize = sizeof(sockaddr_in);
 	sockaddr_in from;
 
-	SOCKET conSock = ::accept(sockNum,(sockaddr *)&from,&fromSize);
+	int conSock = ::accept(sockNum,(sockaddr *)&from,&fromSize);
 
 
 	if (conSock ==  INVALID_SOCKET)
@@ -618,7 +411,7 @@ ClientSocket *WSAClientSocket::accept()
     WSAClientSocket *cs = new WSAClientSocket();
 	cs->sockNum = conSock;
 
-	cs->host.port = (from.sin_port & 0xff) << 8 | ((from.sin_port >> 8) & 0xff);
+	cs->host.port = from.sin_port;
 	cs->host.ip = from.sin_addr.S_un.S_un_b.s_b1<<24 |
 				  from.sin_addr.S_un.S_un_b.s_b2<<16 |
 				  from.sin_addr.S_un.S_un_b.s_b3<<8 |
@@ -629,7 +422,6 @@ ClientSocket *WSAClientSocket::accept()
 #ifdef DISABLE_NAGLE
 	cs->setNagle(false);
 #endif
-	cs->setBufSize(65535);
 
 	return cs;
 }
@@ -637,35 +429,29 @@ ClientSocket *WSAClientSocket::accept()
 // --------------------------------------------------
 void WSAClientSocket::close()
 {
-	sockLock.on();
 	if (sockNum)
 	{
 		shutdown(sockNum,SD_SEND);
 
 		setReadTimeout(2000);
-		unsigned int stime = sys->getTime();
 		try
 		{
-			char c[1024];
-			while (read(&c, sizeof(c)) > 0)
-				if (sys->getTime() - stime > 5)
-					break;
+			//char c;
+			//while (readUpto(&c,1)!=0);
+			//readUpto(&c,1);
 		}catch(StreamException &) {}
 
-		if (closesocket (sockNum))
+		if (closesocket(sockNum))
 			LOG_ERROR("closesocket() error");
 
 
 		sockNum=0;
 	}
-	sockLock.off();
 }
 
 // --------------------------------------------------
 bool	WSAClientSocket::readReady()
 {
-	if (rbDataSize) return true;
-
 	timeval timeout;
 	fd_set read_fds;
 
