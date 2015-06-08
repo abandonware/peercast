@@ -1,0 +1,16 @@
+*.bak
+*.o
+*.orig
+*~
+.pc/
+debian/*.debhelper
+debian/*.log
+debian/*.substvars
+debian/files
+debian/peercast-handlers/
+debian/peercast-servent/
+debian/peercast/
+debian/stamp-makefile-build
+debian/stamp-patched
+ui/linux/peercast
+
