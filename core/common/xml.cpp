@@ -22,11 +22,6 @@
 #include "stream.h"
 #include <stdlib.h>
 #include <stdarg.h>
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // ----------------------------------
 void XML::Node::add(Node *n)
@@ -243,7 +238,7 @@ int XML::Node::findAttrID(const char *name)
 // ----------------------------------
 char *XML::Node::findAttr(const char *name)
 {
-	size_t nlen = strlen(name);
+	int nlen = strlen(name);
 	for(int i=1; i<numAttr; i++)
     {
     	char *an = getAttrName(i);

@@ -22,17 +22,12 @@
 #include <process.h>
 #include <windows.h>
 #include <time.h>
-#include "wsys.h"
-#include "wsocket.h"
-#include "..\common\stats.h"
-#include "..\common\peercast.h"
+#include "win32/wsys.h"
+#include "win32/wsocket.h"
+#include "stats.h"
+#include "peercast.h"
 #include <sys/timeb.h>
 #include <time.h>
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // ---------------------------------
 WSys::WSys(HWND w)
@@ -60,7 +55,7 @@ unsigned int WSys::getTime()
 {
 	time_t ltime;
 	time( &ltime );
-	return (unsigned int)ltime;
+	return ltime;
 }
 
 // ---------------------------------
@@ -89,21 +84,15 @@ bool	WSys::startThread(ThreadInfo *info)
 {
 	info->active = true;
 
-/*	typedef unsigned ( __stdcall *start_address )( void * );
+	typedef unsigned ( __stdcall *start_address )( void * );
 
 	unsigned int threadID;
 	info->handle = (unsigned int)_beginthreadex( NULL, 0, (start_address)info->func, info, 0, &threadID );
-
+	
     if(info->handle == 0) 
-		return false;*/
-
-	typedef void (__cdecl *start_address)( void * );
-	info->handle = _beginthread((start_address)info->func, 0,info);
-
-    if(info->handle == -1) 
 		return false;
 
-  return true;
+	return true;
 
 }
 // ---------------------------------

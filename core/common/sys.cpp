@@ -24,18 +24,9 @@
 #include "sys.h"
 #include "socket.h"
 #include "gnutella.h"
-#include "servmgr.h" //JP-EX
-#if defined(WIN32) && !defined(QT)	// qt
-#include "utf8.h" //JP-Patch
-#endif
 #include <stdlib.h>
 #include <time.h>
 #include "jis.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // -----------------------------------
 #define isSJIS(a,b) ((a >= 0x81 && a <= 0x9f || a >= 0xe0 && a<=0xfc) && (b >= 0x40 && b <= 0x7e || b >= 0x80 && b<=0xfc))
@@ -161,7 +152,6 @@ void Host::fromStrName(const char *str, int p)
 
 	char name[128];
 	strncpy(name,str,sizeof(name)-1);
-	name[127] = '\0';
 	port = p;
 	char *pp = strstr(name,":");
 	if (pp)
@@ -236,23 +226,14 @@ char *trimstr(char *s1)
 
 	char *s = s1;
 
-	if(strlen(s1) > 0) {
-/*	s1 = s1+strlen(s1);
+	s1 = s1+strlen(s1);
 
 	while (*--s1)
 		if ((*s1 != ' ') && (*s1 != '\t'))
-			break;*/
+			break;
 
-		s1 = s1+strlen(s1);
+	s1[1] = 0;
 
-//	s1[1] = 0;
-
-		while (*--s1)
-			if ((*s1 != ' ') && (*s1 != '\t'))
-				break;
- 
-		s1[1] = 0;
-	}
 	return s;
 }
 
@@ -290,9 +271,7 @@ bool String::isValidURL()
 // -----------------------------------
 void String::setFromTime(unsigned int t)
 {
-//	char *p = ctime((time_t*)&t);
-	time_t tmp = t;
-	char *p = ctime(&tmp);
+	char *p = ctime((time_t*)&t);
 	if (p)
 		strcpy(data,p);
 	else
@@ -663,21 +642,6 @@ void String::ASCII2META(const char *in, bool safe)
 	}
 	*op=0;
 }
-#if defined(WIN32) && !defined(QT)	// qt
-// -----------------------------------
-void String::ASCII2SJIS(const char *in) //JP-EX
-{
-	char *op = data;
-	char *p;
-	if (utf8_decode(in,&p)<0)
-	{
-		strcpy(op,in);
-		return;
-	}
-	strcpy(op,p);
-	free(p);
-}
-#endif
 // -----------------------------------
 void String::convertTo(TYPE t)
 {
@@ -734,11 +698,6 @@ void String::convertTo(TYPE t)
 			case T_METASAFE:
 				ASCII2META(tmp.data,true);
 				break;
-#if defined(WIN32) && !defined(QT)	// qt
-			case T_SJIS: //JP-EX
-				ASCII2SJIS(tmp.data);
-				break;
-#endif
 		}
 
 		type = t;
@@ -749,11 +708,11 @@ void LogBuffer::write(const char *str, TYPE t)
 {
 	lock.on();
 
-	size_t len = strlen(str);
+	unsigned int len = strlen(str);
 	int cnt=0;
 	while (len)
 	{
-		size_t rlen = len;
+		unsigned int rlen = len;
 		if (rlen > (lineLen-1))
 			rlen = lineLen-1;
 
@@ -786,8 +745,7 @@ char *getCGIarg(const char *str, const char *arg)
 	if (!str)
 		return NULL;
 
-//	char *s = strstr(str,arg);
-	char *s = (char*)strstr(str,arg);
+	char *s = strstr(str,arg);
 
 	if (!s)
 		return NULL;
@@ -991,8 +949,7 @@ void GnuIDList::clear()
 // ---------------------------
 void LogBuffer::dumpHTML(Stream &out)
 {
-	WLockBlock lb(&lock);
-	lb.on();
+	lock.on();
 
 	unsigned int nl = currLine;
 	unsigned int sp = 0;
@@ -1029,7 +986,7 @@ void LogBuffer::dumpHTML(Stream &out)
 		}
 	}
 
-	lb.off();
+	lock.off();
 
 }
 

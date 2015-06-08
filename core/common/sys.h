@@ -28,8 +28,8 @@
 extern char *stristr(const char *s1, const char *s2);
 extern char *trimstr(char *s);
 
+#define MAX_CGI_LEN 512
 
-#define MAX_CGI_LEN 1024
 // ------------------------------------
 class String
 {
@@ -49,10 +49,7 @@ public:
 		T_METASAFE,
 		T_BASE64,
 		T_UNICODE,
-		T_UNICODESAFE,
-#ifdef WIN32
-		T_SJIS, //JP-EX
-#endif
+		T_UNICODESAFE
 	};
 
 	String() {clear();}
@@ -96,7 +93,7 @@ public:
 	// set from null terminated string, remove first/last chars
 	void setUnquote(const char *p, TYPE t=T_ASCII) 
 	{
-		size_t slen = strlen(p);
+		int slen = strlen(p);
 		if (slen > 2)
 		{
 			if (slen >= MAX_LEN) slen = MAX_LEN;
@@ -109,7 +106,6 @@ public:
 
 	void clear() 
 	{
-		memset(data, 0, MAX_LEN);
 		data[0]=0;
 		type = T_UNKNOWN;
 	}
@@ -121,9 +117,6 @@ public:
 	void HTML2UNICODE(const char *);
 	void BASE642ASCII(const char *);
 	void UNKNOWN2UNICODE(const char *,bool);
-#ifdef WIN32
-	void ASCII2SJIS(const char *); //JP-EX
-#endif
 
 	static	int	base64WordToChars(char *,const char *);
 
@@ -244,9 +237,6 @@ public:
 
 typedef __int64 int64_t;
 
-#ifndef _UINTPTR_T_DEFINED
-typedef unsigned int uintptr_t;
-#endif
 
 // ------------------------------------
 class WEvent
@@ -296,7 +286,7 @@ public:
 
 // ------------------------------------
 typedef int (WINAPI *THREAD_FUNC)(ThreadInfo *);
-typedef uintptr_t THREAD_HANDLE;
+typedef unsigned int THREAD_HANDLE;
 #define THREAD_PROC int WINAPI
 #define vsnprintf _vsnprintf
 
@@ -332,11 +322,10 @@ public:
 
 #ifdef __APPLE__
 #include <sched.h>
-//#define _BIG_ENDIAN 1	// qt
+#define _BIG_ENDIAN 1
 #endif
 
-//typedef long long int64_t;
-typedef long int int64_t;
+typedef long long int64_t;
 
 typedef int (*THREAD_FUNC)(ThreadInfo *);
 #define THREAD_PROC int 
@@ -408,33 +397,6 @@ public:
 	
 };
 #endif
-
-class WLockBlock
-{
-private:
-	WLock *lock;
-	bool flg;
-public:
-	WLockBlock(WLock *l){
-		lock = l;
-		flg = false;
-	}
-	~WLockBlock(){
-		if (flg){
-			lock->off();
-			LOG_DEBUG("LOCK OFF by destructor");
-		}
-	}
-	void on(){
-		flg = true;
-		lock->on();
-	}
-	void off(){
-		flg = false;
-		lock->off();
-	}
-};
-
 // ------------------------------------
 class ThreadInfo
 {
@@ -444,7 +406,6 @@ public:
 	ThreadInfo()
 	{
 		active = false;
-		finish = false;
 		id = 0;
 		func = NULL;
 		data = NULL;
@@ -452,12 +413,10 @@ public:
 
 	void	shutdown();
 
-	volatile bool	active;
-	volatile bool	finish;
+	volatile bool	 active;
 	int		id;
 	THREAD_FUNC func;
 	THREAD_HANDLE handle;
-	
 
 	void	*data;
 };
@@ -503,20 +462,6 @@ public:
 
 };
 
-#define RWLOCK_READ_MAX 32
-
-class LockBlock
-{
-public:
-	LockBlock(WLock &l){ flg = false; lock = l; }
-	~LockBlock(){ if (flg) lock.off(); }
-	void lockon(){ flg = true; lock.on(); }
-	void lockoff(){ flg = false; lock.off(); }
-
-private:
-	WLock lock;
-	bool flg;
-};
 
 // ------------------------------------
 extern Sys *sys;
@@ -524,7 +469,7 @@ extern Sys *sys;
 // ------------------------------------
 
 
-#if __BIG_ENDIAN__	// qt
+#if _BIG_ENDIAN
 #define CHECK_ENDIAN2(v) v=SWAP2(v)
 #define CHECK_ENDIAN3(v) v=SWAP3(v)
 #define CHECK_ENDIAN4(v) v=SWAP4(v)

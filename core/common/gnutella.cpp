@@ -28,11 +28,6 @@
 #include "servmgr.h"
 #include "stats.h"
 #include <stdlib.h>
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 // ---------------------------
 const char *GNU_FUNC_STR(int func)
@@ -239,7 +234,7 @@ void GnuPacket::initFind(const char *str, XML *xml, int maxTTL)
 
 	if (str)
 	{
-		size_t slen = strlen(str);
+		int slen = strlen(str);
 		mem.write((void *)str,slen+1);	// string
 	}else
 		mem.writeChar(0);		// null string

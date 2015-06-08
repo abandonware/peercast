@@ -25,7 +25,6 @@
 #include "sys.h"
 
 class FileStream;
-class WriteBufferStream;
 
 // ---------------------------------------
 class HTML 
@@ -47,8 +46,8 @@ public:
 	};
 
 	HTML(const char *,Stream &);
-	~HTML();
 
+	
 	void	startNode(const char *, const char * = NULL);
 	void	addLink(const char *, const char *, bool = false);
 	void	startTag(const char *, const char * = NULL,...);
@@ -85,7 +84,7 @@ public:
 	char	currTag[MAX_TAGLEVEL][MAX_TAGLEN];
 	int		tagLevel;
 	int		refresh;
-	WriteBufferStream *out;
+	Stream  *out;
 };
 
 #endif

@@ -46,7 +46,6 @@ public:
 	,bitsPos(0)
 	{
 	}
-	virtual ~Stream() {}
 
 	virtual int readUpto(void *,int) {return 0;}
 	virtual int read(void *,int)=0;
@@ -238,6 +237,7 @@ public:
     virtual void	rewind();
     virtual void	close();
 
+
 	FILE *file;
 };
 // -------------------------------------
@@ -248,7 +248,6 @@ public:
 	:buf(NULL)
 	,len(0)
 	,pos(0)
-	,own(false)
 	{
 	}
 
@@ -256,7 +255,6 @@ public:
 	:buf((char *)p)
 	,len(l)
 	,pos(0)
-	,own(false)
 	{
 	}
 
@@ -264,28 +262,23 @@ public:
 	:buf(new char[l])
 	,len(l)
 	,pos(0)
-	,own(true)
 	{
 	}
-
-	~MemoryStream() {free2();}
 
 	void readFromFile(FileStream &file)
 	{
 		len = file.length();
 		buf = new char[len];
-		own = true;
 		pos = 0;
 		file.read(buf,len);
 	}
 
-	void free2()
+	void free()
 	{
-		if (own && buf)
+		if (buf)
 		{
 			delete buf;
 			buf = NULL;
-			own = false;
 		}
 
 	}
@@ -336,7 +329,6 @@ public:
 
 
 	char *buf;
-	bool own;
 	int len,pos;
 };
 // --------------------------------------------------
@@ -372,170 +364,6 @@ public:
 	Stream *stream;
 };
 
-// -------------------------------------
-
-class SockBufStream : public Stream
-{
-public:
-	SockBufStream(Stream &sockStream, int bufsize=128*1024)
-		: sock(sockStream), mem(bufsize)
-		{
-		}
-
-	~SockBufStream()
-		{
-			flush();
-			mem.free2();
-		}
-
-	virtual int read(void *p,int l)
-		{
-			return sock.read(p, l);
-		}
-
-	virtual void write(const void *p, int len)
-		{
-			if ( mem.pos+len > mem.len )
-				flush();
-
-			mem.write(p, len);
-		}
-
-	void flush()
-		{
-			if ( mem.pos > 0 ) {
-				sock.write(mem.buf, mem.pos);
-				clearWriteBuffer();
-			}
-		}
-
-	void clearWriteBuffer()
-		{
-			mem.rewind();
-		}
-
-private:
-	Stream &sock;
-	MemoryStream mem;
-};
-
-// -------------------------------------
-class WriteBufferStream : public Stream
-{
-public:
-	WriteBufferStream(Stream *out_)
-	:buf(NULL)
-	,own(false)
-	,len(0)
-	,pos(0)
-	,out(out_)
-	{
-	}
-
-	WriteBufferStream(void *p, int l, Stream *out_)
-	:buf((char *)p)
-	,own(false)
-	,len(l)
-	,pos(0)
-	,out(out_)
-	{
-	}
-
-	WriteBufferStream(int l, Stream *out_)
-	:buf(new char[l])
-	,own(true)
-	,len(l)
-	,pos(0)
-	,out(out_)
-	{
-	}
-
-	virtual ~WriteBufferStream()
-	{
-		try {
-			flush();
-		} catch (StreamException &) {}
-		free();
-	}
-
-	void readFromFile(FileStream &file)
-	{
-		len = file.length();
-		buf = new char[len];
-		own = true;
-		pos = 0;
-		file.read(buf,len);
-	}
-
-	void flush()
-	{
-		if (!out || !buf) return;
-		out->write(buf, pos);
-		pos = 0;
-	}
-
-	void free()
-	{
-		if (own && buf)
-		{
-			delete buf;
-			buf = NULL;
-			own = false;
-		}
-
-	}
-
-	virtual int read(void *p,int l)
-    {
-		return 0;
-    }
-
-	virtual void write(const void *p,int l)
-    {
-		char *cp = (char *) p;
-		while ((pos + l) >= len) {
-			int n = len - pos;
-			memcpy(&buf[pos], cp, n);
-			l -= n;
-			cp += n;
-			pos = len;
-			flush();
-			if (pos != 0) return;
-		}
-		if (l > 0) {
-			memcpy(&buf[pos], cp, l);
-			pos += l;
-		}
-    }
-
-    virtual bool eof()
-    {
-        return true;
-    }
-
-	virtual void rewind()
-	{
-		pos = 0;
-	}
-
-	virtual void seekTo(int p)
-	{
-		pos = p;
-	}
-
-	virtual int getPosition()
-	{
-		return pos;
-	}
-
-	void	convertFromBase64();
-
-
-	char *buf;
-	bool own;
-	int len,pos;
-	Stream *out;
-};
 
 #endif
 

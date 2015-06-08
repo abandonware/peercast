@@ -37,8 +37,9 @@
                       <td>
 					  {@if servMgr.upgradeURL} 
 	  				    <div align="center" class="normal">
-                        <a href="Templates/%7B$servMgr.upgradeURL%7D" target="_blank"><strong><font color="#FF0000">Es ist eine neue Version verf&uuml;gbar!
-                        Bitte hier klicken, um die neue Version herunterzuladen!</font></strong></a>
+                        <a href="{$servMgr.upgradeURL}" target="_blank"><strong><font color="#FF0000">Please 
+                          upgrade your client, click here to download the latest 
+                          version. </font></strong></a>
 						</div>
 					  {@else}
 	  				    <div align="center" class="normal-small">
@@ -56,13 +57,14 @@
           <table width="100%" border="1" cellpadding="1" cellspacing="0">
             <tr class="normal"> 
               <td><div align="center"><a href="index.html">Information</a></div></td>
-              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">Gelbe Seiten</a></div></td>
-              <td><div align="center"><a href="relays.html">Relays (Weiterleitungen)</a></div></td>
-              <td><div align="center"><a href="broadcast.html">Sendung / &Uuml;bertragung</a></div></td>
-              <td><div align="center"><a href="connections.html">Verbindungen</a></div></td>
-              <td><div align="center"><a href="settings.html">Einstellungen</a></div></td>
-              <td><div align="center"><a href="viewlog.html">Log-Datei anzeigen</a></div></td>
-              <td><div align="center"><a href="logout.html">Abmelden</a></div></td>
+              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">Yellow 
+                  Pages</a></div></td>
+              <td><div align="center"><a href="relays.html">Relays</a></div></td>
+              <td><div align="center"><a href="broadcast.html">Broadcast</a></div></td>
+              <td><div align="center"><a href="connections.html">Connections</a></div></td>
+              <td><div align="center"><a href="settings.html">Settings</a></div></td>
+              <td><div align="center"><a href="viewlog.html">View Log</a></div></td>
+              <td><div align="center"><a href="logout.html">Logout</a></div></td>
             </tr>
           </table>
           <br>
@@ -324,8 +326,8 @@
           </TABLE>
           <!-- InstanceEndEditable --> 
           <hr size="1">
-          <div align="center" class="normal-small"> &copy; 2002-2004 <a href="http://www.peercast.org" target="_blank">peercast.org</a> 
-          </div>
+          <div align="center" class="normal-small"> &copy; 2005<a href="http://www.peercast.org" target="_blank"> 
+            peercast.org</a> </div>
         </div></td>
     </tr>
   </table>

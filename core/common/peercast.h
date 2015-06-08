@@ -66,9 +66,6 @@ public:
 
 	virtual const char * APICALL getPath() {return "./";}
 	virtual const char * APICALL getIniFilename() {return "peercast.ini";}
-	virtual bool	APICALL clearTemp() { return false; } //JP-EX
-	virtual void	APICALL openLogFile() {} //JP-EX
-	virtual void	APICALL getDirectory() {} //JP-EX
 	virtual void	APICALL printLog(LogBuffer::TYPE, const char *) {}
 	virtual void	APICALL addChannel(ChanInfo *) {}
 	virtual void	APICALL delChannel(ChanInfo *) {}

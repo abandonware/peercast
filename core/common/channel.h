@@ -168,8 +168,6 @@ public:
 	TrackInfo	track;
 	::String	desc,genre,url,comment;
 
-	unsigned int ppFlags; //JP-MOD
-
 };
 
 
@@ -178,8 +176,7 @@ class ChanHit
 {
 public:
 	void	init();
-	void	initLocal(int numl,int numr,int nums,int uptm,bool,bool,unsigned int,Channel*,unsigned int,unsigned int);
-	void	initLocal_pp(bool isStealth, int numClaps); //JP-MOD
+	void	initLocal(int numl,int numr,int nums,int uptm,bool,unsigned int,unsigned int);
 	XML::Node *createXML();
 
 	void	writeAtoms(AtomStream &,GnuID &);
@@ -190,29 +187,16 @@ public:
 	Host				host;
 	Host				rhost[2];
 	unsigned int		numListeners,numRelays,numHops;
-	int					clap_pp;	//JP-MOD
 	unsigned int		time,upTime,lastContact;
 	unsigned int		hitID;
 	GnuID				sessionID,chanID;
 	unsigned int		version;
-	unsigned int		version_vp;
+	unsigned int		oldestPos,newestPos;
 
 	bool	firewalled:1,stable:1,tracker:1,recv:1,yp:1,dead:1,direct:1,relay:1,cin:1;
-	bool	relayfull:1,chfull:1,ratefull:1;
 
 	ChanHit *next;
 
-	int status;
-	int servent_id;
-
-	unsigned int		oldestPos,newestPos;
-	Host uphost;
-	unsigned int		uphostHops;
-
-	char				version_ex_prefix[2];
-	unsigned int		version_ex_number;
-
-	unsigned int		lastSendSeq;
 };
 // ----------------------------------
 class ChanHitList
@@ -226,10 +210,8 @@ public:
 	ChanHit	*addHit(ChanHit &);
 	void	delHit(ChanHit &);
 	void	deadHit(ChanHit &);
-	void	clearHits(bool);
 	int		numHits();
 	int		numListeners();
-	int		numClaps();	//JP-MOD
 	int		numRelays();
 	int		numFirewalled();
 	int		numTrackers();
@@ -238,7 +220,6 @@ public:
 	unsigned int		newestHit();
 
 	int			pickHits(ChanHitSearch &);
-	int			pickSourceHits(ChanHitSearch &);
 
 	bool	isUsed() {return used;}
 	int		clearDeadHits(unsigned int,bool);
@@ -250,16 +231,13 @@ public:
 	int		getTotalRelays();
 	int		getTotalFirewalled();
 
-	unsigned int	getSeq();
-
 	bool	used;
 	ChanInfo	info;
 	ChanHit	*hit;
 	unsigned int lastHitTime;
 	ChanHitList *next;
 
-	WLock seqLock;
-	unsigned int riSequence;
+
 };
 // ----------------------------------
 class ChanHitSearch
@@ -281,9 +259,6 @@ public:
 	bool	useBusyRelays,useBusyControls;
 	GnuID	excludeID;
 	int		numResults;
-	unsigned int seed;
-
-	int getRelayHost(Host host1, Host host2, GnuID exID, ChanHitList *chl);
 };
 
 // ----------------------------------
@@ -334,7 +309,6 @@ public:
 class ChannelSource
 {
 public:
-	virtual ~ChannelSource() {}
 	virtual void stream(Channel *) = 0;
 
 	virtual int getSourceRate() {return 0;}
@@ -393,7 +367,7 @@ public:
 
 	Channel();
 	void	reset();
-	void	endThread(bool flg);
+	void	endThread();
 
 	void	startMP3File(char *);
 	void	startGet();
@@ -445,7 +419,6 @@ public:
 
 	static THREAD_PROC	stream(ThreadInfo *);
 
-	static THREAD_PROC  waitFinish(ThreadInfo *);
 
 	void	setStatus(STATUS s);
 	const char  *getSrcTypeStr() {return srcTypes[srcType];}
@@ -482,7 +455,6 @@ public:
 	int		localListeners();
 	int		localRelays();
 
-	int		totalClaps();	//JP-MOD
 	int		totalListeners();
 	int		totalRelays();
 
@@ -505,13 +477,9 @@ public:
 	::String  sourceURL;
 
 	bool	bump,stayConnected;
-	bool	stealth; //JP-MOD
 	int		icyMetaInterval;
 	unsigned int streamPos;
-	unsigned int skipCount; //JP-EX
 	bool	readDelay;
-	int		overrideMaxRelaysPerChannel; //JP-MOD
-	bool	bClap; //JP-MOD
 
 	TYPE	type;
 	ChannelSource *sourceData;
@@ -520,7 +488,6 @@ public:
 
 	MP3Header mp3Head;
 	ThreadInfo	thread;
-	ThreadInfo  *finthread;
 
 	unsigned int lastIdleTime;
 	int		status;
@@ -537,13 +504,6 @@ public:
 	WEvent	syncEvent;
 
 	Channel *next;
-
-	int channel_id;
-	ChanHit chDisp;
-	ChanHit trackerHit;
-	bool bumped;
-	unsigned int lastSkipTime;
-	unsigned int lastStopTime;
 };
 
 // ----------------------------------
@@ -568,7 +528,6 @@ public:
 	Channel *findChannelByID(GnuID &);
 	Channel	*findChannelByNameID(ChanInfo &);
 	Channel *findPushChannel(int);
-	Channel	*findChannelByChannelID(int id);
 
 	void	broadcastTrackerSettings();
 	void	setUpdateInterval(unsigned int v);
@@ -617,7 +576,6 @@ public:
 
 	int			pickHits(ChanHitSearch &);
 
-	bool		findParentHit(ChanHit &p);
 
 
 	Channel		*channel;
@@ -642,7 +600,6 @@ public:
 	unsigned int		autoQuery;
 	unsigned int	prefetchTime;
 	unsigned int	lastYPConnect;
-	unsigned int	lastYPConnect2;
 	unsigned int	icyIndex;
 
 	unsigned int	hostUpdateInterval;
@@ -650,8 +607,6 @@ public:
 
 	GnuID	currFindAndPlayChannel;
 
-	WLock channellock;
-	WLock hitlistlock;
 };
 // ----------------------------------
 class PlayList
@@ -674,23 +629,20 @@ public:
 		type = t;
 		urls = new ::String[max];
 		titles = new ::String[max];
-		contacturls = new ::String[max]; //JP-MOD
 	}
 
 	~PlayList()
 	{
 		delete [] urls;
 		delete [] titles;
-		delete [] contacturls; //JP-MOD
 	}
 
-	void	addURL(const char *url, const char *tit, const char *contacturl/*JP-MOD*/)
+	void	addURL(const char *url, const char *tit)
 	{
 		if (numURLs < maxURLs)
 		{
 			urls[numURLs].set(url);
 			titles[numURLs].set(tit);
-			contacturls[numURLs].set(contacturl); //JP-MOD
 			numURLs++;
 		}
 	}
@@ -733,18 +685,11 @@ public:
 	TYPE	type;
 	int		numURLs,maxURLs;
 	::String	*urls,*titles;
-	::String	*contacturls; //JP-MOD
 };
 
 // ----------------------------------
 
 extern ChanMgr *chanMgr;
 
-// for PCRaw start.
-bool isIndexTxt(ChanInfo *info);
-bool isIndexTxt(Channel *ch);
-int numMaxRelaysIndexTxt(Channel *ch);
-int canStreamIndexTxt(Channel *ch);
-// for PCRaw end
 
 #endif

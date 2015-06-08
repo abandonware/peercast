@@ -23,10 +23,5 @@
 #include <string.h>
 #include "socket.h"
 #include "sys.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 

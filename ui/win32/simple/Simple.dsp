@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="Simple" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** 編集しないでください **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
 CFG=Simple - Win32 Private Debug
-!MESSAGE これは有効なﾒｲｸﾌｧｲﾙではありません。 このﾌﾟﾛｼﾞｪｸﾄをﾋﾞﾙﾄﾞするためには NMAKE を使用してください。
-!MESSAGE [ﾒｲｸﾌｧｲﾙのｴｸｽﾎﾟｰﾄ] ｺﾏﾝﾄﾞを使用して実行してください
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "Simple.mak".
 !MESSAGE 
-!MESSAGE NMAKE の実行時に構成を指定できます
-!MESSAGE ｺﾏﾝﾄﾞ ﾗｲﾝ上でﾏｸﾛの設定を定義します。例:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "Simple.mak" CFG="Simple - Win32 Private Debug"
 !MESSAGE 
-!MESSAGE 選択可能なﾋﾞﾙﾄﾞ ﾓｰﾄﾞ:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Simple - Win32 Release" ("Win32 (x86) Application" 用)
-!MESSAGE "Simple - Win32 Debug" ("Win32 (x86) Application" 用)
-!MESSAGE "Simple - Win32 Private Release" ("Win32 (x86) Application" 用)
-!MESSAGE "Simple - Win32 Private Debug" ("Win32 (x86) Application" 用)
+!MESSAGE "Simple - Win32 Release" (based on "Win32 (x86) Application")
+!MESSAGE "Simple - Win32 Debug" (based on "Win32 (x86) Application")
+!MESSAGE "Simple - Win32 Private Release" (based on "Win32 (x86) Application")
+!MESSAGE "Simple - Win32 Private Debug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -61,7 +61,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Copy exe to pimp & program files
-PostBuild_Cmds=copy                   release\peercast.exe                   "c:\program files\peercast"                  	copy                   release\peercast.exe                   ..\pimp\ 
+PostBuild_Cmds=copy                  release\peercast.exe                  "c:\program files\peercast"                 	copy                  release\peercast.exe                  ..\pimp\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Simple - Win32 Debug"
@@ -130,7 +130,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Copy exe to pimp & program files
-PostBuild_Cmds=copy                   release\peercast.exe                   "c:\program files\peercast"                  	copy                   release\peercast.exe                   ..\pimp\ 
+PostBuild_Cmds=copy                  release\peercast.exe                  "c:\program files\peercast"                 	copy                  release\peercast.exe                  ..\pimp\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Simple - Win32 Private Debug"
@@ -182,15 +182,7 @@ PostBuild_Cmds=copy           debug\peercast.exe           "c:\program files\pee
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\chkMemoryLeak.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\gui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\core\common\identify_encoding.c
 # End Source File
 # Begin Source File
 
@@ -205,25 +197,13 @@ SOURCE=.\Simple.rc
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\core\common\utf8.c
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\chkMemoryLeak.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\gui.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\core\common\identify_encoding.h
 # End Source File
 # Begin Source File
 
@@ -236,10 +216,6 @@ SOURCE=.\Simple.h
 # Begin Source File
 
 SOURCE=.\StdAfx.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\core\common\utf8.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

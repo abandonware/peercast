@@ -38,7 +38,9 @@
                       <td>
 					  {@if servMgr.upgradeURL} 
 	  				    <div align="center" class="normal">
-                        <a href="{$servMgr.upgradeURL}" target="_blank"><strong><font color="#FF0000"> 新バージョンがダウンロードできるようになりました。!!!  </font></strong></a>
+                        <a href="{$servMgr.upgradeURL}" target="_blank"><strong><font color="#FF0000">Please 
+                          upgrade your client, click here to download the latest 
+                          version. </font></strong></a>
 						</div>
 					  {@else}
 	  				    <div align="center" class="normal-small">
@@ -55,93 +57,89 @@
           <div align="center"></div>
           <table width="100%" border="1" cellpadding="1" cellspacing="0">
             <tr class="normal"> 
-              <td><div align="center"><a href="index.html">情報</a></div></td>
-              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">Yellow 
-                  Pages</a></div></td>
+              <td><div align="center"><a href="index.html">インフォメーション</a></div></td>
+              <td><div align="center"><a href="http://yp.peercast.org/?host={$servMgr.serverLocalIP}:{$servMgr.serverPort1}" target="_blank">イエローページ</a></div></td>
               <td><div align="center"><a href="relays.html">リレー</a></div></td>
-              <td><div align="center"><a href="broadcast.html">配信</a></div></td>
+              <td><div align="center"><a href="broadcast.html">ブロードキャスト</a></div></td>
               <td><div align="center"><a href="connections.html">コネクション</a></div></td>
-              <td><div align="center"><a href="settings.html">設定</a></div></td>
-              <td><div align="center"><a href="viewlog.html">ログ表示</a></div></td>
+              <td><div align="center"><a href="settings.html">セッティング</a></div></td>
+              <td><div align="center"><a href="viewlog.html">ログ</a></div></td>
               <td><div align="center"><a href="logout.html">ログアウト</a></div></td>
             </tr>
           </table>
           <br>
           <!-- InstanceBeginEditable name="content" -->
-<p>
-{@if servMgr.disabled} 
+          <p> {@if servMgr.disabled} 
           <div align="center" class="normal"> 
-            <p><strong><font color="#FF0000">Broadcasting has been disabled</font></strong></p>
-            <p><strong><font color="#FF0000">Please contact peercast.org</font></strong></p>
+            <p><strong><font color="#FF0000">Broadcasting has been disabled</font></strong
+></p>
+            <p><strong><font color="#FF0000">Please contact peercast.org</font></strong
+></p>
           </div>
-{@end} 
-</p>
-<DIV align=center>
-<TABLE align=center border=0>
+          {@end} 
+          <DIV align=center> 
+            <TABLE align=center border=0>
               <TBODY>
                 <TR align=middle> 
                   <TD vAlign=top> <TABLE width="100%" align=center border=0>
                       <TBODY>
                         <TR align=middle bgColor=#cccccc> 
-                          <TD colSpan=2 class="normal"><B>情報</B></TD>
+                          <TD colSpan=2 class="normal"><B>Information</B></TD>
                         </TR>
                         <TR align=left bgColor=#eeeeee class="normal"> 
-                          <TD>サーバー IP</TD>
+                          <TD>Server IP</TD>
                           <TD>{$servMgr.serverIP}</TD>
                         </TR>
                         <TR align=left bgColor=#dddddd class="normal"> 
-                          <TD>ポート</TD>
-                          <TD bgcolor="#dddddd">{@if servMgr.firewallKnown} {@if servMgr.isFirewalled} 
-                            <strong><font color="Red">開いてない</font></strong> {@else} <font color="Green">開いてる(OK!)</font> {@end} {@else} 不明 {@end} </TD>
+                          <TD>Firewalled</TD>
+                          <TD bgcolor="#dddddd">{@if servMgr.firewallKnown} {@if 
+                            servMgr.isFirewalled} Yes {@else} No {@end} {@else} 
+                            Unknown {@end} </TD>
                         </TR>
                         <TR align=left bgColor=#eeeeee class="normal"> 
                           <TD>Uptime</TD>
                           <TD>{$servMgr.uptime}</TD>
                         </TR>
                         <TR align=left bgColor=#dddddd class="normal"> 
-                          <TD>チャンネルキャッシュ</TD>
-                          <TD>{$chanMgr.numHitLists} - <a href="/admin?cmd=clear&hitlists=1">クリア</a></TD>
+                          <TD>Channel cache</TD>
+                          <TD>{$chanMgr.numHitLists} - <a href="/admin?cmd=clear&hitlists=1">Clear</a></TD>
                         </TR>
                         <TR align=left bgColor=#eeeeee class="normal"> 
-                          <TD>XML ステータス</TD>
-                          <TD bgcolor="#eeeeee"><A href="/admin?cmd=viewxml">見る</A></TD>
+                          <TD>XML stats</TD>
+                          <TD><A href="/admin?cmd=viewxml">View</A></TD>
                         </TR>
                         <TR align=left bgColor=#dddddd class="normal"> 
-                          <TD>GNet ホストキャッシュ</TD>
+                          <TD>GNet Host cache </TD>
                           <TD>{$servMgr.numServHosts} - <A 
-            href="/admin?cmd=clear&hostcache=1">クリア</A></TD>
-                        </TR>
-                        <TR align=left bgColor=#eeeeee class="normal"> 
-                          <TD>ホストオプション</TD>
-                          <TD>{@if servMgr.isRoot}Root{@end} {@if servMgr.isPrivate}Licensed{@end} {@if servMgr.forceYP}ForceYP{@end}</TD>
+            href="/admin?cmd=clear&hostcache=1">Clear</A></TD>
                         </TR>
                       </TBODY>
                     </TABLE></TD>
                   <TD vAlign=top> <TABLE width="100%" align=center border=0>
                       <TBODY>
                         <TR align=middle> 
-                          <TD colSpan=4 bgcolor="#cccccc" class="normal"><B>帯域</B></TD>
+                          <TD colSpan=4 bgcolor="#cccccc" class="normal"><B>Bandwidth</B></TD>
                         </TR>
                         <TR align=left class="normal"> 
                           <TD bgcolor="#eeeeee"></TD>
-                          <TD bgcolor="#eeeeee"><B>下り</B></TD>
-                          <TD bgcolor="#eeeeee"><B>上り</B></TD>
-                          <TD bgcolor="#eeeeee"><B>合計</B></TD>
+                          <TD bgcolor="#eeeeee"><B>In</B></TD>
+                          <TD bgcolor="#eeeeee"><B>Out</B></TD>
+                          <TD bgcolor="#eeeeee"><B>Total</B></TD>
                         </TR>
                         <TR align=left class="normal"> 
-                          <TD bgcolor="#dddddd">合計 (Kbits/s)</TD>
+                          <TD bgcolor="#dddddd">Total (Kbit/s)</TD>
                           <TD bgcolor="#dddddd">{$stats.totalInPerSec}</TD>
                           <TD bgcolor="#dddddd">{$stats.totalOutPerSec}</TD>
                           <TD bgcolor="#dddddd">{$stats.totalPerSec}</TD>
                         </TR>
                         <TR align=left class="normal"> 
-                          <TD bgcolor="#eeeeee">インターネット (Kbits/s)</TD>
+                          <TD bgcolor="#eeeeee">Internet (Kbit/s)</TD>
                           <TD bgcolor="#eeeeee">{$stats.wanInPerSec}</TD>
                           <TD bgcolor="#eeeeee">{$stats.wanOutPerSec}</TD>
                           <TD bgcolor="#eeeeee">{$stats.wanTotalPerSec}</TD>
                         </TR>
                         <TR align=left class="normal"> 
-                          <TD bgcolor="#dddddd">GNet (Kbits/s)</TD>
+                          <TD bgcolor="#dddddd">GNet (Kbit/s)</TD>
                           <TD bgcolor="#dddddd">{$stats.netInPerSec}</TD>
                           <TD bgcolor="#dddddd">{$stats.netOutPerSec}</TD>
                           <TD bgcolor="#dddddd">{$stats.netTotalPerSec}</TD>
@@ -156,15 +154,15 @@
                     </TABLE>
                     <table width="100%" border="0">
                       <tr bgcolor="#cccccc"> 
-                        <td colspan="2"><div align="center" class="normal"><strong>コネクション</strong></div></td>
+                        <td colspan="2"><div align="center" class="normal"><strong>Connections</strong></div></td>
                       </tr>
                       <tr bgcolor="#dddddd"> 
-                        <td width="66%" bgcolor="#dddddd" class="normal">ダイレクト
+                        <td width="66%" bgcolor="#dddddd" class="normal">Direct 
                         </td>
                         <td width="34%" class="normal">{$servMgr.numDirect}</td>
                       </tr>
                       <tr bgcolor="#eeeeee"> 
-                        <td bgcolor="#eeeeee" class="normal">リレー</td>
+                        <td bgcolor="#eeeeee" class="normal">Relay</td>
                         <td class="normal">{$servMgr.numRelays}</td>
                       </tr>
                       <tr bgcolor="#dddddd"> 
@@ -177,11 +175,11 @@
                         <td class="normal">{$servMgr.numPGNU}</td>
                       </tr>
                       <tr bgcolor="#dddddd"> 
-                        <td class="normal">要求</td>
+                        <td class="normal">Incoming</td>
                         <td bgcolor="#dddddd" class="normal">{$servMgr.numIncoming}</td>
                       </tr>
                       <tr bgcolor="#eeeeee"> 
-                        <td class="normal">ポート {$servMgr.serverPort1} / {$servMgr.serverPort2}</td>
+                        <td class="normal">Port {$servMgr.serverPort1} / {$servMgr.serverPort2}</td>
                         <td class="normal">{$servMgr.numActive1} / {$servMgr.numActive2}</td>
                       </tr>
                     </table></TD>

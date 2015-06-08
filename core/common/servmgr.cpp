@@ -27,11 +27,6 @@
 #include "pcp.h"
 #include "atom.h"
 #include "version2.h"
-#ifdef _DEBUG
-#include "chkMemoryLeak.h"
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define new DEBUG_NEW
-#endif
 
 ThreadInfo ServMgr::serverThread,ServMgr::idleThread;
 
@@ -62,10 +57,10 @@ ServMgr::ServMgr()
 
 	lastIncoming = 0;
 
-	maxBitrateOut = 540; //JP-Patch 0-> 540
+	maxBitrateOut = 0;
 	maxRelays = MIN_RELAYS;
 	maxDirect = 0;
-	refreshHTML = 1800;
+	refreshHTML = 5;
 
 	networkID.clear();
 
@@ -82,10 +77,9 @@ ServMgr::ServMgr()
 	forceIP.clear();
 
 	strcpy(connectHost,"connect1.peercast.org");
-	strcpy(htmlPath,"html/ja");
+	strcpy(htmlPath,"html/en");
 
 	rootHost = "yp.peercast.org";
-	rootHost2 = "";
 
 	serverHost.fromStrIP("127.0.0.1",DEFAULT_PORT);
 
@@ -117,50 +111,7 @@ ServMgr::ServMgr()
 
 	servents = NULL;
 
-	modulePath[0] = 0; //JP-EX
-	kickPushStartRelays = 1; //JP-EX
-	kickPushInterval = 60; //JP-EX
-	kickPushTime = 0; //JP-EX
-	autoRelayKeep = 2; //JP-EX
-	autoMaxRelaySetting = 0; //JP-EX
-	autoBumpSkipCount = 50; //JP-EX
-	enableGetName = 1; //JP-EX
-	allowConnectPCST = 0; //JP-EX
-	getModulePath = true; //JP-EX
-	clearPLS = false; //JP-EX
-	writeLogFile = false; //JP-EX
-
-	autoPort0Kick = false;
-	allowOnlyVP = false;
-	kickKeepTime = 0;
-	vpDebug = false;
-	saveIniChannel = true;
-	saveGuiPos = false;
-	keepDownstreams = true;
-
 	chanLog="";
-
-	maxRelaysIndexTxt = 1;	// for PCRaw (relay)
-
-	{ //JP-MOD
-#ifdef WIN32
-		guiSimpleChannelList = false;
-		guiSimpleConnectionList = false;
-		guiTopMost = false;
-
-		guiChanListDisplays = 10;
-		guiConnListDisplays = 10;
-
-		guiTitleModify = false;
-		guiTitleModifyNormal = "PeerCast 受信:%rx.kbits.1%kbps 送信:%tx.kbits.1%kbps";
-		guiTitleModifyMinimized = "R:%rx.kbytes%KB/s T:%tx.kbytes%KB/s";
-
-		guiAntennaNotifyIcon = false;
-#endif
-
-		disableAutoBumpIfDirect = 1;
-		asxDetailedMode = 1;
-	}
 }
 // -----------------------------------
 BCID *ServMgr::findValidBCID(int index)
@@ -255,11 +206,9 @@ void ServMgr::setFilterDefaults()
 	numFilters = 0;
 
 	filters[numFilters].host.fromStrIP("255.255.255.255",0);
-//	filters[numFilters].flags = ServFilter::F_NETWORK|ServFilter::F_DIRECT;
-	filters[numFilters].flags = ServFilter::F_NETWORK;
-
+	filters[numFilters].flags = ServFilter::F_NETWORK|ServFilter::F_DIRECT;
 	numFilters++;
-	LOG_DEBUG("numFilters = %d", numFilters);
+
 }
 
 // -----------------------------------
@@ -531,20 +480,6 @@ Servent *ServMgr::findServentByIndex(int id)
 		if (cnt == id)
 			return s;
 			cnt++;
-		s=s->next;
-	}
-	return NULL;
-}
-
-// -----------------------------------
-Servent *ServMgr::findServentByServentID(int id)
-{
-	Servent *s = servents;
-	while (s)
-	{
-		if (id == s->servent_id){
-			return s;
-		}
 		s=s->next;
 	}
 	return NULL;
@@ -954,12 +889,6 @@ static void  writeServHost(IniFile &iniFile, ServHost &sh)
 	iniFile.writeLine("[End]");
 }
 
-#if defined(WIN32) && !defined(QT)	// qt
-extern bool guiFlg;
-extern WINDOWPLACEMENT winPlace;
-extern HWND guiWnd;
-#endif
-
 // --------------------------------------------------
 void ServMgr::saveSettings(const char *fn)
 {
@@ -1022,67 +951,7 @@ void ServMgr::saveSettings(const char *fn)
 		iniFile.writeStrValue("password",servMgr->password);
 		iniFile.writeIntValue("maxUptime",chanMgr->maxUptime);
 
-		//JP-EX
-		iniFile.writeSection("Extend");
-		iniFile.writeIntValue("autoRelayKeep",servMgr->autoRelayKeep);
-		iniFile.writeIntValue("autoMaxRelaySetting",servMgr->autoMaxRelaySetting);
-		iniFile.writeIntValue("autoBumpSkipCount",servMgr->autoBumpSkipCount);
-		iniFile.writeIntValue("kickPushStartRelays",servMgr->kickPushStartRelays);
-		iniFile.writeIntValue("kickPushInterval",servMgr->kickPushInterval);
-		iniFile.writeIntValue("allowConnectPCST",servMgr->allowConnectPCST);
-		iniFile.writeIntValue("enableGetName",servMgr->enableGetName);
-
-		iniFile.writeIntValue("maxRelaysIndexTxt", servMgr->maxRelaysIndexTxt);	// for PCRaw (relay)
-
-		{ //JP-MOD
-			iniFile.writeIntValue("disableAutoBumpIfDirect",servMgr->disableAutoBumpIfDirect);
-			iniFile.writeIntValue("asxDetailedMode",servMgr->asxDetailedMode);
-
-			iniFile.writeSection("PP");
-#ifdef WIN32
-			iniFile.writeBoolValue("ppClapSound", servMgr->ppClapSound);
-			iniFile.writeStrValue("ppClapSoundPath", servMgr->ppClapSoundPath.cstr());
-#endif
-		}
-
-		//JP-EX
-		iniFile.writeSection("Windows");
-		iniFile.writeBoolValue("getModulePath",servMgr->getModulePath);
-		iniFile.writeBoolValue("clearPLS",servMgr->clearPLS);
-		iniFile.writeBoolValue("writeLogFile",servMgr->writeLogFile);
-
-		//VP-EX
-		iniFile.writeStrValue("rootHost2",servMgr->rootHost2.cstr());
-		iniFile.writeBoolValue("autoPort0Kick",servMgr->autoPort0Kick);
-		iniFile.writeBoolValue("allowOnlyVP",servMgr->allowOnlyVP);
-		iniFile.writeIntValue("kickKeepTime",servMgr->kickKeepTime);
-		iniFile.writeBoolValue("vpDebug", servMgr->vpDebug);
-		iniFile.writeBoolValue("saveIniChannel", servMgr->saveIniChannel);
-#if defined(WIN32) && !defined(QT)	// qt
-		iniFile.writeBoolValue("saveGuiPos", servMgr->saveGuiPos);
-		if (guiFlg){
-//			GetWindowPlacement(guiWnd, &winPlace);
-			iniFile.writeIntValue("guiTop", winPlace.rcNormalPosition.top);
-			iniFile.writeIntValue("guiBottom", winPlace.rcNormalPosition.bottom);
-			iniFile.writeIntValue("guiLeft", winPlace.rcNormalPosition.left);
-			iniFile.writeIntValue("guiRight", winPlace.rcNormalPosition.right);
-		}
-
-		{ //JP-MOD
-			iniFile.writeBoolValue("guiSimpleChannelList", servMgr->guiSimpleChannelList);
-			iniFile.writeBoolValue("guiSimpleConnectionList", servMgr->guiSimpleConnectionList);
-			iniFile.writeBoolValue("guiTopMost", servMgr->guiTopMost);
-
-			iniFile.writeIntValue("guiChanListDisplays", servMgr->guiChanListDisplays);
-			iniFile.writeIntValue("guiConnListDisplays", servMgr->guiConnListDisplays);
-
-			iniFile.writeBoolValue("guiTitleModify", servMgr->guiTitleModify);
-			iniFile.writeStrValue("guiTitleModifyNormal", servMgr->guiTitleModifyNormal.cstr());
-			iniFile.writeStrValue("guiTitleModifyMinimized", servMgr->guiTitleModifyMinimized.cstr());
-
-			iniFile.writeBoolValue("guiAntennaNotifyIcon", servMgr->guiAntennaNotifyIcon);
-		}
-#endif
+		
 		int i;
 
 		for(i=0; i<servMgr->numFilters; i++)
@@ -1096,7 +965,6 @@ void ServMgr::saveSettings(const char *fn)
 			iniFile.writeBoolValue("PeerCast",notifyMask&NT_PEERCAST);
 			iniFile.writeBoolValue("Broadcasters",notifyMask&NT_BROADCASTERS);
 			iniFile.writeBoolValue("TrackInfo",notifyMask&NT_TRACKINFO);
-			iniFile.writeBoolValue("Applause",notifyMask&NT_APPLAUSE); //JP-MOD
 		iniFile.writeLine("[End]");
 
 
@@ -1138,46 +1006,44 @@ void ServMgr::saveSettings(const char *fn)
 			}
 		}
 
-		if (servMgr->saveIniChannel){
-			Channel *c = chanMgr->channel;
-			while (c)
+		Channel *c = chanMgr->channel;
+		while (c)
+		{
+			char idstr[64];
+			if (c->isActive() && c->stayConnected)
 			{
-				char idstr[64];
-				if (c->isActive() && c->stayConnected)
+				c->getIDStr(idstr);
+
+				iniFile.writeSection("RelayChannel");
+				iniFile.writeStrValue("name",c->getName());
+				iniFile.writeStrValue("genre",c->info.genre.cstr());
+				if (!c->sourceURL.isEmpty())
+					iniFile.writeStrValue("sourceURL",c->sourceURL.cstr());
+				iniFile.writeStrValue("sourceProtocol",ChanInfo::getProtocolStr(c->info.srcProtocol));
+				iniFile.writeStrValue("contentType",ChanInfo::getTypeStr(c->info.contentType));
+				iniFile.writeIntValue("bitrate",c->info.bitrate);
+				iniFile.writeStrValue("contactURL",c->info.url.cstr());
+				iniFile.writeStrValue("id",idstr);
+				iniFile.writeBoolValue("stayConnected",c->stayConnected);
+
+				ChanHitList *chl = chanMgr->findHitListByID(c->info.id);
+				if (chl)
 				{
-					c->getIDStr(idstr);
 
-					iniFile.writeSection("RelayChannel");
-					iniFile.writeStrValue("name",c->getName());
-					iniFile.writeStrValue("genre",c->info.genre.cstr());
-					if (!c->sourceURL.isEmpty())
-						iniFile.writeStrValue("sourceURL",c->sourceURL.cstr());
-					iniFile.writeStrValue("sourceProtocol",ChanInfo::getProtocolStr(c->info.srcProtocol));
-					iniFile.writeStrValue("contentType",ChanInfo::getTypeStr(c->info.contentType));
-					iniFile.writeIntValue("bitrate",c->info.bitrate);
-					iniFile.writeStrValue("contactURL",c->info.url.cstr());
-					iniFile.writeStrValue("id",idstr);
-					iniFile.writeBoolValue("stayConnected",c->stayConnected);
-
-					ChanHitList *chl = chanMgr->findHitListByID(c->info.id);
-					if (chl)
+					ChanHitSearch chs;
+					chs.trackersOnly = true;
+					if (chl->pickHits(chs))
 					{
-
-						ChanHitSearch chs;
-						chs.trackersOnly = true;
-						if (chl->pickHits(chs))
-						{
-							char ipStr[64];
-							chs.best[0].host.toStr(ipStr);
-							iniFile.writeStrValue("tracker",ipStr);
-						}
+						char ipStr[64];
+						chs.best[0].host.toStr(ipStr);
+						iniFile.writeStrValue("tracker",ipStr);
 					}
-					iniFile.writeLine("[End]");
 				}
-				c=c->next;
+				iniFile.writeLine("[End]");
 			}
+			c=c->next;
 		}
-		
+
 
 		
 #if 0
@@ -1392,108 +1258,6 @@ void ServMgr::loadSettings(const char *fn)
 				servMgr->queryTTL = iniFile.getIntValue();
 			}
 
-			//JP-Extend
-			else if (iniFile.isName("autoRelayKeep"))
-				servMgr->autoRelayKeep = iniFile.getIntValue();
-			else if (iniFile.isName("autoMaxRelaySetting"))
-				servMgr->autoMaxRelaySetting = iniFile.getIntValue();
-			else if (iniFile.isName("autoBumpSkipCount"))
-				servMgr->autoBumpSkipCount = iniFile.getIntValue();
-			else if (iniFile.isName("kickPushStartRelays"))
-				servMgr->kickPushStartRelays = iniFile.getIntValue();
-			else if (iniFile.isName("kickPushInterval"))
-			{
-				servMgr->kickPushInterval = iniFile.getIntValue();
-				if (servMgr->kickPushInterval < 60)
-					servMgr->kickPushInterval = 0;
-			}
-			else if (iniFile.isName("allowConnectPCST"))
-				servMgr->allowConnectPCST = iniFile.getIntValue();
-			else if (iniFile.isName("enableGetName"))
-				servMgr->enableGetName = iniFile.getIntValue();
-
-			else if (iniFile.isName("maxRelaysIndexTxt"))			// for PCRaw (relay)
-				servMgr->maxRelaysIndexTxt = iniFile.getIntValue();
-
-			//JP-MOD
-			else if (iniFile.isName("disableAutoBumpIfDirect"))
-				servMgr->disableAutoBumpIfDirect = iniFile.getIntValue();
-			else if (iniFile.isName("asxDetailedMode"))
-				servMgr->asxDetailedMode = iniFile.getIntValue();
-
-#ifdef WIN32
-			else if (iniFile.isName("ppClapSound"))
-				servMgr->ppClapSound = iniFile.getBoolValue();
-			else if (iniFile.isName("ppClapSoundPath"))
-				servMgr->ppClapSoundPath.set(iniFile.getStrValue(),String::T_ASCII);
-#endif
-
-			//JP-Windows
-			else if (iniFile.isName("getModulePath"))
-				servMgr->getModulePath = iniFile.getBoolValue();
-			else if (iniFile.isName("clearPLS"))
-				servMgr->clearPLS = iniFile.getBoolValue();
-			else if (iniFile.isName("writeLogFile"))
-				servMgr->writeLogFile = iniFile.getBoolValue();
-
-			//VP-EX
-			else if (iniFile.isName("rootHost2"))
-			{
-				if (!PCP_FORCE_YP)
-					servMgr->rootHost2 = iniFile.getStrValue();
-			}
-			else if (iniFile.isName("autoPort0Kick"))
-				servMgr->autoPort0Kick = iniFile.getBoolValue();
-			else if (iniFile.isName("allowOnlyVP"))
-				servMgr->allowOnlyVP = iniFile.getBoolValue();
-			else if (iniFile.isName("kickKeepTime"))
-				servMgr->kickKeepTime = iniFile.getIntValue();
-			else if (iniFile.isName("vpDebug"))
-				servMgr->vpDebug = iniFile.getBoolValue();
-			else if (iniFile.isName("saveIniChannel"))
-				servMgr->saveIniChannel = iniFile.getBoolValue();
-#if defined(WIN32) && !defined(QT)	// qt
-			else if (iniFile.isName("saveGuiPos"))
-				servMgr->saveGuiPos = iniFile.getBoolValue();
-			else if (iniFile.isName("guiTop"))
-				winPlace.rcNormalPosition.top = iniFile.getIntValue();
-			else if (iniFile.isName("guiBottom"))
-				winPlace.rcNormalPosition.bottom = iniFile.getIntValue();
-			else if (iniFile.isName("guiLeft"))
-				winPlace.rcNormalPosition.left = iniFile.getIntValue();
-			else if (iniFile.isName("guiRight")){
-				winPlace.rcNormalPosition.right = iniFile.getIntValue();
-				winPlace.length = sizeof(winPlace);
-				winPlace.flags = 0;
-				winPlace.showCmd = 1;
-				winPlace.ptMinPosition.x = -1;
-				winPlace.ptMinPosition.y = -1;
-				winPlace.ptMaxPosition.x = -1;
-				winPlace.ptMaxPosition.y = -1;
-				if (servMgr->saveGuiPos){
-					guiFlg = true;
-				}
-			}
-			else if (iniFile.isName("guiSimpleChannelList")) //JP-MOD
-				servMgr->guiSimpleChannelList = iniFile.getBoolValue();
-			else if (iniFile.isName("guiSimpleConnectionList")) //JP-MOD
-				servMgr->guiSimpleConnectionList = iniFile.getBoolValue();
-			else if (iniFile.isName("guiTopMost")) //JP-MOD
-				servMgr->guiTopMost = iniFile.getBoolValue();
-			else if (iniFile.isName("guiChanListDisplays")) //JP-MOD
-				servMgr->guiChanListDisplays = iniFile.getIntValue();
-			else if (iniFile.isName("guiConnListDisplays")) //JP-MOD
-				servMgr->guiConnListDisplays = iniFile.getIntValue();
-			else if (iniFile.isName("guiTitleModify")) //JP-MOD
-				servMgr->guiTitleModify = iniFile.getBoolValue();
-			else if (iniFile.isName("guiTitleModifyNormal")) //JP-MOD
-				servMgr->guiTitleModifyNormal.set(iniFile.getStrValue(),String::T_ASCII);
-			else if (iniFile.isName("guiTitleModifyMinimized")) //JP-MOD
-				servMgr->guiTitleModifyMinimized.set(iniFile.getStrValue(),String::T_ASCII);
-			else if (iniFile.isName("guiAntennaNotifyIcon")) //JP-MOD
-				servMgr->guiAntennaNotifyIcon = iniFile.getBoolValue();
-#endif
-
 			// debug
 			else if (iniFile.isName("logDebug"))
 				showLog |= iniFile.getBoolValue() ? 1<<LogBuffer::T_DEBUG:0;
@@ -1517,7 +1281,6 @@ void ServMgr::loadSettings(const char *fn)
 
 				if (numFilters < (MAX_FILTERS-1))
 					numFilters++;
-				LOG_DEBUG("*** numFilters = %d", numFilters);
 			}
 			else if (iniFile.isName("[Notify]"))
 			{
@@ -1532,8 +1295,6 @@ void ServMgr::loadSettings(const char *fn)
 						notifyMask |= iniFile.getBoolValue()?NT_BROADCASTERS:0;
 					else if (iniFile.isName("TrackInfo"))
 						notifyMask |= iniFile.getBoolValue()?NT_TRACKINFO:0;
-					else if (iniFile.isName("Applause")) //JP-MOD
-						notifyMask |= iniFile.getBoolValue()?NT_APPLAUSE:0;
 				}
 
 			}
@@ -1633,7 +1394,6 @@ void ServMgr::loadSettings(const char *fn)
 	if (!numFilters)
 		setFilterDefaults();
 
-	LOG_DEBUG("numFilters = %d", numFilters);
 }
 
 // --------------------------------------------------
@@ -1662,22 +1422,7 @@ unsigned int ServMgr::numStreams(Servent::TYPE tp, bool all)
 		if (sv->isConnected())
 			if (sv->type == tp)
 				if (all || !sv->isPrivate())
-				{
-					// for PCRaw (relay) start.
-					if(tp == Servent::T_RELAY)
-					{
-						Channel *ch = chanMgr->findChannelByID(sv->chanID);
-
-						// index.txtはカウントしない
-						if(!isIndexTxt(ch))
-							cnt++;
-					}
-					else
-					// for PCRaw (relay) end.
-					{
-						cnt++;
-					}
-				}
+					cnt++;
 		sv=sv->next;
 	}
 	return cnt;
@@ -1692,13 +1437,10 @@ bool ServMgr::getChannel(char *str,ChanInfo &info, bool relay)
 
 	procConnectArgs(str,info);
 
-	WLockBlock wb(&(chanMgr->channellock));
-
-	wb.on();
 	Channel *ch;
 
 	ch = chanMgr->findChannelByNameID(info);
-	if (ch && ch->thread.active)
+	if (ch)
 	{
 
 		if (!ch->isPlaying())
@@ -1718,11 +1460,9 @@ bool ServMgr::getChannel(char *str,ChanInfo &info, bool relay)
 	{
 		if (relay)
 		{
-			wb.off();
 			ch = chanMgr->findAndRelay(info);
 			if (ch)
 			{
-				// ↓Exception point
 				info = ch->info; //get updated channel info 
 				return true;
 			}
@@ -1853,10 +1593,7 @@ void ServMgr::procConnectArgs(char *str,ChanInfo &info)
 			{
 				Host h;
 				h.fromStrName(arg,DEFAULT_PORT);
-				chanMgr->hitlistlock.on();
 				chanMgr->addHit(h,info.id,true);
-				chanMgr->hitlistlock.off();
-
 			}
 
 
@@ -1876,17 +1613,14 @@ bool ServMgr::start()
 #else
 	priv = "";
 #endif
-	if (VERSION_EX){
-		LOG_DEBUG("Peercast %s, %s %s",PCX_VERSTRING_EX,peercastApp->getClientTypeOS(),priv);
-	} else {
-		LOG_DEBUG("Peercast %s, %s %s",PCX_VERSTRING,peercastApp->getClientTypeOS(),priv);
-	}
+	LOG_DEBUG("Peercast %s, %s %s",PCX_VERSTRING,peercastApp->getClientTypeOS(),priv);
 
 	sessionID.toStr(idStr);
 	LOG_DEBUG("SessionID: %s",idStr);
 
 	chanMgr->broadcastID.toStr(idStr);
 	LOG_DEBUG("BroadcastID: %s",idStr);
+
 	checkForceIP();
 
 
@@ -1993,22 +1727,13 @@ int ServMgr::broadcastPushRequest(ChanHit &hit, Host &to, GnuID &chanID, Servent
 	MemoryStream pmem(pack.data,sizeof(pack.data));
 	AtomStream atom(pmem);
 
-	if (VERSION_EX==0){
-		atom.writeParent(PCP_BCST,8);
-	} else {
-		atom.writeParent(PCP_BCST,10);
-	}
+	atom.writeParent(PCP_BCST,7);
 		atom.writeChar(PCP_BCST_GROUP,PCP_BCST_GROUP_ALL);
 		atom.writeChar(PCP_BCST_HOPS,0);
 		atom.writeChar(PCP_BCST_TTL,7);
 		atom.writeBytes(PCP_BCST_DEST,hit.sessionID.id,16);
 		atom.writeBytes(PCP_BCST_FROM,servMgr->sessionID.id,16);
 		atom.writeInt(PCP_BCST_VERSION,PCP_CLIENT_VERSION);
-		atom.writeInt(PCP_BCST_VERSION_VP,PCP_CLIENT_VERSION_VP);
-		if (VERSION_EX){
-			atom.writeBytes(PCP_BCST_VERSION_EX_PREFIX,PCP_CLIENT_VERSION_EX_PREFIX,2);
-			atom.writeShort(PCP_BCST_VERSION_EX_NUMBER,PCP_CLIENT_VERSION_EX_NUMBER);
-		}
 		atom.writeParent(PCP_PUSH,3);
 			atom.writeInt(PCP_PUSH_IP,to.ip);
 			atom.writeShort(PCP_PUSH_PORT,to.port);
@@ -2047,21 +1772,12 @@ void ServMgr::broadcastRootSettings(bool getUpdate)
 		ChanPacket pack;
 		MemoryStream mem(pack.data,sizeof(pack.data));
 		AtomStream atom(mem);
-		if (VERSION_EX==0){
-			atom.writeParent(PCP_BCST,7);
-		} else {
-			atom.writeParent(PCP_BCST,9);
-		}
+		atom.writeParent(PCP_BCST,6);
 			atom.writeChar(PCP_BCST_GROUP,PCP_BCST_GROUP_TRACKERS);
 			atom.writeChar(PCP_BCST_HOPS,0);
 			atom.writeChar(PCP_BCST_TTL,7);
 			atom.writeBytes(PCP_BCST_FROM,sessionID.id,16);
 			atom.writeInt(PCP_BCST_VERSION,PCP_CLIENT_VERSION);
-			atom.writeInt(PCP_BCST_VERSION_VP,PCP_CLIENT_VERSION_VP);
-			if (VERSION_EX){
-				atom.writeBytes(PCP_BCST_VERSION_EX_PREFIX,PCP_CLIENT_VERSION_EX_PREFIX,2);
-				atom.writeShort(PCP_BCST_VERSION_EX_NUMBER,PCP_CLIENT_VERSION_EX_NUMBER);
-			}
 			writeRootAtoms(atom,getUpdate);
 
 		mem.len = mem.pos;
@@ -2161,11 +1877,6 @@ int ServMgr::idleProc(ThreadInfo *thread)
 
 		// clear dead hits
 		chanMgr->clearDeadHits(true);
-
-		if (servMgr->kickPushStartRelays && servMgr->kickPushInterval) //JP-EX
-		{
-			servMgr->banFirewalledHost();
-		}
 
 		if (servMgr->shutdownTimer)
 		{
@@ -2368,13 +2079,10 @@ bool ServMgr::writeVariable(Stream &out, const String &var)
 	char buf[1024];
 	String str;
 
-	if (var == "version"){
-		if (VERSION_EX){
-			strcpy(buf,PCX_VERSTRING_EX);
-		} else {
-			strcpy(buf,PCX_VERSTRING);
-		}
-	}else if (var == "uptime"){
+	if (var == "version")
+		strcpy(buf,PCX_VERSTRING);
+	else if (var == "uptime")
+	{
 		str.setFromStopwatch(getUptime());
 		str.convertTo(String::T_HTML);
 		strcpy(buf,str.cstr());
@@ -2402,10 +2110,8 @@ bool ServMgr::writeVariable(Stream &out, const String &var)
 		sprintf(buf,"%d",getFirewall()==FW_UNKNOWN?0:1);
 	else if (var == "rootMsg")
 		strcpy(buf,rootMsg);
-	else if (var == "isRoot"){
-		LOG_DEBUG("isRoot = %d", isRoot);
+	else if (var == "isRoot")
 		sprintf(buf,"%d",isRoot?1:0);
-	}
 	else if (var == "isPrivate")
 		sprintf(buf,"%d",(PCP_BROADCAST_FLAGS&1)?1:0);
 	else if (var == "forceYP")
@@ -2422,10 +2128,8 @@ bool ServMgr::writeVariable(Stream &out, const String &var)
 		sprintf(buf,"%d",maxControl);
 	else if (var == "maxServIn")
 		sprintf(buf,"%d",maxServIn);
-	else if (var == "numFilters"){
+	else if (var == "numFilters")
 		sprintf(buf,"%d",numFilters+1);
-		LOG_DEBUG("*-* numFilters = %d", numFilters);
-	}
 	else if (var == "maxPGNUIn")
 		sprintf(buf,"%d",maxGnuIncoming);
 	else if (var == "minPGNUIn")
@@ -2456,58 +2160,6 @@ bool ServMgr::writeVariable(Stream &out, const String &var)
 
 	else if (var == "disabled")
 		sprintf(buf,"%d",isDisabled);
-
-	// JP-EX
-	else if (var.startsWith("autoRelayKeep")) {
-		if (var == "autoRelayKeep.0")
-			strcpy(buf, (autoRelayKeep == 0) ? "1":"0");
-		else if (var == "autoRelayKeep.1")
-			strcpy(buf, (autoRelayKeep == 1) ? "1":"0");
-		else if (var == "autoRelayKeep.2")
-			strcpy(buf, (autoRelayKeep == 2) ? "1":"0");
-	} else if (var == "autoMaxRelaySetting")
-		sprintf(buf,"%d",autoMaxRelaySetting);
-	else if (var == "autoBumpSkipCount")
-		sprintf(buf,"%d",autoBumpSkipCount);
-	else if (var == "kickPushStartRelays")
-		sprintf(buf,"%d",kickPushStartRelays);
-	else if (var == "kickPushInterval")
-		sprintf(buf,"%d",kickPushInterval);
-	else if (var == "allowConnectPCST")
-		strcpy(buf, (allowConnectPCST == 1) ? "1":"0");
-	else if (var == "enableGetName")
-		strcpy(buf, (enableGetName == 1)? "1":"0");
-
-	//JP-MOD
-	else if (var == "disableAutoBumpIfDirect")
-		strcpy(buf, (disableAutoBumpIfDirect == 1) ? "1":"0");
-	else if (var.startsWith("asxDetailedMode"))
-	{
-		if (var == "asxDetailedMode.0")
-			strcpy(buf, (asxDetailedMode == 0) ? "1":"0");
-		else if (var == "asxDetailedMode.1")
-			strcpy(buf, (asxDetailedMode == 1) ? "1":"0");
-		else if (var == "asxDetailedMode.2")
-			strcpy(buf, (asxDetailedMode == 2) ? "1":"0");
-	}
-
-	// VP-EX
-	else if (var == "ypAddress2")
-		strcpy(buf,rootHost2.cstr());
-	else if (var.startsWith("autoPort0Kick")) {
-		if (var == "autoPort0Kick.0")
-			strcpy(buf, (autoPort0Kick == 0) ? "1":"0");
-		else if (var == "autoPort0Kick.1")
-			strcpy(buf, (autoPort0Kick == 1) ? "1":"0");
-	}
-	else if (var.startsWith("allowOnlyVP")) {
-		if (var == "allowOnlyVP.0")
-			strcpy(buf, (allowOnlyVP == 0) ? "1":"0");
-		else if (var == "allowOnlyVP.1")
-			strcpy(buf, (allowOnlyVP == 1) ? "1":"0");
-	}
-	else if (var == "kickKeepTime")
-		sprintf(buf, "%d",kickKeepTime);
 
 	else if (var == "serverPort1")
 		sprintf(buf,"%d",serverHost.port);
@@ -2575,192 +2227,9 @@ bool ServMgr::writeVariable(Stream &out, const String &var)
 		out.writeChar('d');
 		return true;
 
-	}else if (var == "maxRelaysIndexTxt")		// for PCRaw (relay)
-		sprintf(buf, "%d", maxRelaysIndexTxt);
-	else
+	}else
 		return false;
 
 	out.writeString(buf);
 	return true;
-}
-// --------------------------------------------------
-//JP-EX
-bool ServMgr::isCheckPushStream()
-{
-	if (servMgr->kickPushStartRelays)
-		if (servMgr->numStreams(Servent::T_RELAY,false)>=(servMgr->kickPushStartRelays-1))
-				return true;
-
-	return false;
-}
-// --------------------------------------------------
-//JP-EX
-void ServMgr::banFirewalledHost()
-{
-	unsigned int kickpushtime = sys->getTime();
-	if ((kickpushtime-servMgr->kickPushTime) > servMgr->kickPushInterval)
-	{
-		servMgr->kickPushTime = kickpushtime;
-		Servent *s = servMgr->servents;
-		LOG_DEBUG("Servent scan start.");
-		while (s)
-		{
-			if (s->type != Servent::T_NONE)
-			{
-				Host h = s->getHost();
-				int ip = h.ip;
-				int port = h.port;
-				Host h2(ip,port);
-				unsigned int tnum = 0;
-
-				if (s->lastConnect)
-					tnum = sys->getTime() - s->lastConnect;
-				if ((s->type==Servent::T_RELAY) && (s->status==Servent::S_CONNECTED) && (tnum>servMgr->kickPushInterval))
-				{						
-/*					ChanHitList *hits[ChanMgr::MAX_HITLISTS];
-					int numHits=0;
-					for(int i=0; i<ChanMgr::MAX_HITLISTS; i++)
-					{
-						ChanHitList *chl = &chanMgr->hitlists[i];
-						if (chl->isUsed())
-							hits[numHits++] = chl;
-					}
-
-					bool isfw = false;
-					int numRelay = 0;
-					if (numHits) 
-					{
-						for(int k=0; k<numHits; k++)
-						{
-							ChanHitList *chl = hits[k];
-							if (chl->isUsed())
-							{
-								for (int j=0; j<ChanHitList::MAX_HITS; j++ )
-								{
-									ChanHit *hit = &chl->hits[j];
-									if (hit->host.isValid() && (h2.ip == hit->host.ip))
-									{
-										if (hit->firewalled)
-											isfw = true;
-										numRelay = hit->numRelays;
-									}
-								}
-							}
-						}
-					}
-					if ((isfw==true) && (numRelay==0))
-					{
-						char hostName[256];
-						h2.toStr(hostName);
-						if (servMgr->isCheckPushStream())
-						{
-							s->thread.active = false;
-							LOG_ERROR("Stop firewalled Servent : %s",hostName);
-						}
-					}*/
-
-					chanMgr->hitlistlock.on();
-					ChanHitList *chl = chanMgr->findHitListByID(s->chanID);
-					if (chl){
-						ChanHit *hit = chl->hit;
-						while(hit){
-							if ((hit->numHops == 1) && hit->host.isValid() && (h2.ip == hit->host.ip) && hit->firewalled /*&& !hit->numRelays*/)
-							{
-								char hostName[256];
-								h2.toStr(hostName);
-								if (servMgr->isCheckPushStream())
-								{
-									s->thread.active = false;
-									LOG_ERROR("Stop firewalled Servent : %s",hostName);
-								}
-							}
-							hit = hit->next;
-						}
-
-					}
-					chanMgr->hitlistlock.off();
-
-
-				}
-			}
-			s=s->next;
-		}
-		LOG_DEBUG("Servent scan finished.");
-	}
-}
-
-// --------------------------------------------------
-/*
-static ChanHit *findServentHit(Servent *s)
-{
-	ChanHitList *chl = chanMgr->findHitListByID(s->chanID);
-	Host h = s->getHost();
-
-	if (chl)
-	{
-		ChanHit *hit = chl->hit;
-		while (hit)
-		{
-			if ((hit->numHops == 1) && hit->host.isValid() && (h.ip == hit->host.ip))
-				return hit;
-			hit = hit->next;
-		}
-	}
-	return NULL;
-}
-*/
-// --------------------------------------------------
-int ServMgr::kickUnrelayableHost(GnuID &chid, ChanHit &sendhit)
-{
-	Servent *ks = NULL;
-	Servent *s = servMgr->servents;
-
-	while (s)
-	{
-		if (s->type == Servent::T_RELAY && s->chanID.isSame(chid) && !s->isPrivate())
-		{
-			Host h = s->getHost();
-
-			ChanHit hit = s->serventHit;
-			if (!hit.relay && hit.numRelays == 0 || hit.firewalled)
-			{
-				char hostName[256];
-				h.toStr(hostName);
-				//s->thread.active = false;
-				LOG_DEBUG("unrelayable Servent : %s",hostName);
-				if (!ks || s->lastConnect < ks->lastConnect) // elder servent
-					ks = s;
-			}
-		}
-		s = s->next;
-	}
-
-	if (ks)
-	{
-		if (sendhit.rhost[0].port)
-		{
-			ChanPacket pack;
-			MemoryStream mem(pack.data,sizeof(pack.data));
-			AtomStream atom(mem);
-			sendhit.writeAtoms(atom, chid);
-			pack.len = mem.pos;
-			pack.type = ChanPacket::T_PCP;
-			GnuID noID;
-			noID.clear();
-
-			ks->sendPacket(pack, chid, noID, noID, Servent::T_RELAY);
-		}
-
-		ks->setStatus(Servent::S_CLOSING);
-		ks->thread.active = false;
-
-		char hostName[256];
-		ks->getHost().toStr(hostName);
-
-		LOG_DEBUG("Stop unrelayable Servent : %s",hostName);
-
-		return 1;
-	}
-
-	return 0;
 }

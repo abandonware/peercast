@@ -10,35 +10,34 @@
   <TR bgColor=#cccccc>
     <TD>
       <DIV align=center><A 
-      href="/admin?html=index">Index</A></DIV></TD>
+      href="/admin?html=index">Informations</A></DIV></TD>
     <TD>
       <DIV align=center><A href="http://yp.peercast.org/?port={$servMgr.serverPort}" 
-      target=_blank>Yellow Pages</A></DIV></TD>
+      target=_blank>Pages Jaunes</A></DIV></TD>
     <TD>
       <DIV align=center><A 
-      href="/admin?html=relays">Relayed channels</A></DIV></TD>
+      href="/admin?html=relays">Relais</A></DIV></TD>
     <TD>
       <DIV align=center><A 
-      href="http://localhost:8144/admin?page=broadcast">Broadcast</A></DIV></TD>
+      href="http://localhost:8144/admin?page=broadcast">Diffuser</A></DIV></TD>
     <TD>
       <DIV align=center><A 
       href="http://localhost:8144/admin?page=connections">Connections</A></DIV></TD>
     <TD>
       <DIV align=center><A 
-      href="http://localhost:8144/admin?page=settings">Settings</A></DIV></TD>
+      href="http://localhost:8144/admin?page=settings">Réglages</A></DIV></TD>
     <TD>
-      <DIV align=center><A href="http://localhost:8144/admin?page=viewlog">View 
-      Log</A></DIV></TD>
+      <DIV align=center><A href="http://localhost:8144/admin?page=viewlog">Voir le journal</A></DIV></TD>
     <TD>
       <DIV align=center><A 
-      href="http://localhost:8144/admin?page=logout">Logout</A></DIV></TD></TR></TBODY></TABLE><B><BR></B>
+      href="http://localhost:8144/admin?page=logout">Sortir</A></DIV></TD></TR></TBODY></TABLE><B><BR></B>
 <TABLE align=center border=0>
   <TBODY>
     <TR align=middle bgColor=#cccccc> 
-      <TD colSpan=2><B>Channel Information</B></TD>
+      <TD colSpan=2><B>Détails du canal</B></TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
-      <TD>Name</TD>
+      <TD>Nom</TD>
       <TD>{$page.channel.name}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
@@ -55,7 +54,7 @@
       target=_blank></A>{$page.channel.contactURL}</TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
-      <TD>Comment</TD>
+      <TD>Commentaires</TD>
       <TD>{$page.channel.comment}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
@@ -67,7 +66,7 @@
       <TD>{$page.channel.type}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
-      <TD>Bitrate</TD>
+      <TD>Débit</TD>
       <TD>{$page.channel.bitrate} kb/s</TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
@@ -76,11 +75,11 @@
         {$page.channel.sourceURL}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
-      <TD>Uptime</TD>
+      <TD>Depuis</TD>
       <TD>{$page.channel.uptime}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
-      <TD>Status</TD>
+      <TD>Statut</TD>
       <TD>{$page.channel.status}</TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
@@ -88,18 +87,18 @@
       <TD>{$page.channel.streamPos}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
-      <TD>Head</TD>
+      <TD>Début</TD>
       <TD>{$page.channel.headPos} ({$page.channel.headLen} bytes)</TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
       <TD align=middle colSpan=2><B>Current Track</B></TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
-      <TD>Artist</TD>
+      <TD>Artiste</TD>
       <TD>{$page.channel.track.artist}</TD>
     </TR>
     <TR align=left bgColor=#eeeeee> 
-      <TD>Title</TD>
+      <TD>Titre</TD>
       <TD>{$page.channel.track.title}</TD>
     </TR>
     <TR align=left bgColor=#dddddd> 
@@ -122,15 +121,15 @@
   <TR align=middle bgColor=#cccccc>
     <TD></TD>
     <TD><B>IP:Port</B></TD>
-    <TD><B>Hops</B></TD>
-    <TD><B>Listeners</B></TD>
-    <TD><B>Relays</B></TD>
-    <TD><B>Uptime</B></TD>
-    <TD><B>Push</B></TD>
-    <TD><B>Busy</B></TD>
-    <TD><B>Tracker</B></TD>
+    <TD><B>Sauts</B></TD>
+    <TD><B>Auditeurs</B></TD>
+    <TD><B>Relais</B></TD>
+    <TD><B>Depuis</B></TD>
+    <TD><B>Relaie</B></TD>
+    <TD><B>Occupé/B></TD>
+    <TD><B>Trackeur</B></TD>
     <TD><B>Agent</B></TD>
-    <TD><B>Update</B></TD>
+    <TD><B>Mise à jour</B></TD>
   </TR>
   {@loop page.channel.numHits}
 	<TR align=middle 
@@ -160,7 +159,7 @@
   <TBODY>
   <TR bgColor=#cccccc>
     <TD>
-      <DIV align=center>� <A 
+      <DIV align=center> <A 
       href="http://localhost:8144/admin?cmd=redirect&amp;url=www.peercast.org" 
       target=_blank>peercast.org</A> 
 2004</DIV></TD></TR></TBODY></TABLE></BODY></HTML>

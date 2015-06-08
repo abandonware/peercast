@@ -9,7 +9,7 @@
 ;
 
 ; The name of the installer
-Name "PeerCast Plug-in v0.1214"
+Name "PeerCast Plug-in v0.1218"
 
 
 ; The file to write

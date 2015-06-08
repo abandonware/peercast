@@ -122,8 +122,7 @@ public:
 		NT_UPGRADE			= 0x0001,
 		NT_PEERCAST			= 0x0002,
 		NT_BROADCASTERS		= 0x0004,
-		NT_TRACKINFO		= 0x0008,
-		NT_APPLAUSE			= 0x0010 //JP-MOD
+		NT_TRACKINFO		= 0x0008
 	};
 
 	enum FW_STATE
@@ -142,7 +141,7 @@ public:
 		MAX_TRYOUT   = 10,			// max. number of outgoing servents to try connect
 		MIN_CONNECTED = 3,			// min. amount of connected hosts that should be kept
 
-		MIN_RELAYS = 1,
+		MIN_RELAYS = 2,
 
 		MAX_FILTERS = 50,
 
@@ -170,7 +169,6 @@ public:
 	Servent	*findServent(Servent::TYPE,Host &,GnuID &);
 	Servent *findOldestServent(Servent::TYPE,bool);
 	Servent *findServentByIndex(int);
-	Servent *findServentByServentID(int);
 
 	bool	writeVariable(Stream &, const String &);
 	Servent	*allocServent();
@@ -346,7 +344,6 @@ public:
 
 	Host	serverHost;
 	String  rootHost;
-	String  rootHost2;
 
 	char	downloadURL[128];
 	String	rootMsg;
@@ -389,60 +386,9 @@ public:
 	int	numVersions;
 
 	int serventNum;
+
 	String chanLog;
 
-	char modulePath[256]; //JP-EX
-	int enableGetName; //JP-EX
-	int allowConnectPCST; //JP-EX
-	int autoRelayKeep; //JP-EX
-	unsigned int autoMaxRelaySetting; //JP-EX
-	unsigned int autoBumpSkipCount;//JP-EX
-	unsigned int kickPushStartRelays; //JP-EX
-	unsigned int kickPushInterval; //JP-EX
-	unsigned int kickPushTime;
-	bool	isCheckPushStream(); //JP-EX
-	void	banFirewalledHost(); //JP-EX
-	int kickUnrelayableHost(GnuID &, ChanHit &);
-
-	bool	getModulePath; //JP-EX
-	bool	clearPLS; //JP-EX
-	bool	writeLogFile; //JP-EX
-
-	bool	autoPort0Kick;
-	bool	allowOnlyVP;
-	unsigned int kickKeepTime;
-	bool	vpDebug;
-	bool	saveIniChannel;
-	bool	saveGuiPos;
-	bool	keepDownstreams;
-
-	int maxRelaysIndexTxt;	// for PCRaw (relay)
-
-#ifdef WIN32 //JP-MOD
-	bool	guiSimpleChannelList;
-	bool	guiSimpleConnectionList;
-	bool	guiTopMost;
-
-	int		guiChanListDisplays;
-	int		guiConnListDisplays;
-	bool	guiTitleModify;
-	String	guiTitleModifyNormal;
-	String	guiTitleModifyMinimized;
-
-	bool	guiAntennaNotifyIcon;
-
-	bool	ppClapSound;
-	String	ppClapSoundPath;
-#endif
-
-	int		disableAutoBumpIfDirect;
-	int		asxDetailedMode;
-
-	enum PPBCSTFLAG //JP-MOD
-	{
-		bcstNone		= 0x00000000,
-		bcstClap		= 0x00000001
-	};
 
 private:
 	FW_STATE	firewalled;
