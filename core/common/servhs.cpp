@@ -150,10 +150,10 @@ void Servent::handshakeHTTP(HTTP &http, bool isHTTP)
 			if (!isAllowed(ALLOW_BROADCAST))
 				throw HTTPException(HTTP_SC_UNAVAILABLE,503);
 
-			char *pwdArg = getCGIarg(fn,"pass=");
-			char *songArg = getCGIarg(fn,"song=");
-			char *mountArg = getCGIarg(fn,"mount=");
-			char *urlArg = getCGIarg(fn,"url=");
+			char const *pwdArg = getCGIarg(fn,"pass=");
+			char const *songArg = getCGIarg(fn,"song=");
+			char const *mountArg = getCGIarg(fn,"mount=");
+			char const *urlArg = getCGIarg(fn,"url=");
 
 			if (pwdArg && songArg)
 			{
@@ -560,7 +560,7 @@ bool Servent::handshakeAuth(HTTP &http,const char *args,bool local)
 	char user[64],pass[64];
 	user[0] = pass[0] = 0;
 
-	char *pwd  = getCGIarg(args, "pass=");
+	char const *pwd  = getCGIarg(args, "pass=");
 
 	if ((pwd) && strlen(servMgr->password))
 	{
@@ -671,7 +671,7 @@ void Servent::handshakeCMD(char *cmd)
 	{
 		if (cmpCGIarg(cmd,"cmd=","redirect"))
 		{
-			char *j = getCGIarg(cmd,"url=");
+			char const *j = getCGIarg(cmd,"url=");
 			if (j)
 			{
 				termArgs(cmd);
@@ -1079,7 +1079,7 @@ void Servent::handshakeCMD(char *cmd)
 					index++;
 				}
 
-				char *findArg = getCGIarg(cmd,"keywords=");
+				char const *findArg = getCGIarg(cmd,"keywords=");
 
 				if (hasCGIarg(cmd,"relay"))
 				{
