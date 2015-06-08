@@ -7,7 +7,7 @@ Standards-Version: 3.7.3
 
 Package: peercast-servent
 Architecture: all
-Depends: peercast (>= 0.1217.toots.20060314-6)
+Depends: peercast (>= 0)
 Description: P2P audio and video streaming servent (dummy package)
  PeerCast is a P2P streaming server. It can stream music
  and video from a broad variety of formats.
@@ -19,7 +19,7 @@ Package: peercast
 Architecture: any
 Depends: ${shlibs:Depends}, logrotate, adduser
 Recommends: peercast-handlers
-Conflicts: gnome-peercast, peercast-servent (<< 0.1217.toots.20060314-5)
+Conflicts: gnome-peercast, peercast-servent (<< 0)
 Replaces: peercast-servent
 Description: P2P audio and video streaming servent
  PeerCast is a P2P streaming server. It can stream music

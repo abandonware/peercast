@@ -1,3 +1,9 @@
+peercast (0.0.0-0) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+
+ -- Philippe Coval <rzr@gna.org>  Tue, 09 Jun 2015 00:00:20 +0200
+
 peercast (0.1218+svn20080104-1.1) unstable; urgency=high
 
   * Non-maintainer upload by the Security Team.
@@ -160,4 +166,3 @@ peercast (0.1214-1) unstable; urgency=low
   * Initial release.
 
  -- Romain Beauxis <toots@rastageeks.org>  Mon, 20 Jun 2005 12:14:02 +0200
-
